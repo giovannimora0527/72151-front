@@ -15,7 +15,7 @@ $danger-color: #ff3b30;
 $success-color: #1db954;
 $purple-color: #9b59b6;
 $info-color: #3498db;
-$secondary-color: #95a5a6;
+$secondary-color: rgb(141, 218, 204);
 $default-color: #2c3e50;
 $light-color: #3a3a3a;
 $dark-color: #1e272e;
@@ -24,7 +24,7 @@ $theme-border: #4b4b4b;
 $white: #ecf0f1;
 
 // Header
-$brand-background: #1e272e;
+$brand-background: #1198ff;
 $header-dark-background: #1e272e;
 $header-dark-text-color: #ecf0f1;
 $header-light-background: #2c3e50;
@@ -75,7 +75,7 @@ $color-bt-name: primary, danger, success, warning, info;
 $color-bt-color: $primary-color, $danger-color, $success-color, $warning-color, $info-color;
 
 // Form control variables
-$form-bg: #2c3e50;
+$form-bg: #1e272e;
 
 $theme-colors: () !default;
 $theme-colors: map-merge(
@@ -94,7 +94,7 @@ $theme-colors: map-merge(
 
 // Color contrast
 $yiq-contrasted-threshold: 150 !default;
-$yiq-dark-color: #bdc3c7;
+$yiq-dark-color: #1a2023;
 $yiq-light-color: #ecf0f1;
 $theme-color-interval: 8% !default;
 $alert-bg-level: -10 !default;
