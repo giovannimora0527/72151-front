@@ -16,7 +16,8 @@ export const routes: Routes = [
     data: { title: 'Inicio' },
     children: [      
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
-      { path: 'autores', component: AutorComponent, data: { title: 'Autores' }}      
+      { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
+      { path: 'libros', component: AutorComponent, data: { title: 'Libros' }} 
     ]
   },
   { path: '**', redirectTo: 'inicio' }

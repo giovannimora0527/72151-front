@@ -1,0 +1,197 @@
+@import '../../../../scss/variables'; // Asegúrate de que la ruta sea la correcta según tu estructura
+
+.modal {
+    .modal-content {
+      background-color: $dark-layout; // Fondo oscuro para el modal
+      color: $theme-font-color; // Color de texto para el modal
+      border: 1px solid $theme-border; // Borde del modal
+    }
+  
+    .modal-header {
+      background-color: $header-dark-background; // Fondo oscuro para el encabezado
+      border-bottom: 1px solid $theme-border; // Borde inferior del encabezado
+      
+      .modal-title {
+        color: $header-dark-text-color; // Color para el título del modal
+      }
+      
+      .btn-close {
+        color: $menu-light-background; // Color para el botón de cierre
+        filter: invert(1) grayscale(100%) brightness(200%); // Invierte el color del ícono para que sea visible en fondo oscuro
+      }
+    }
+  
+    .modal-body {
+      .form-control {
+        background-color: $form-bg; // Fondo para los inputs
+        border: 1px solid $theme-border; // Borde para los inputs
+        color: $inverse-color; // Color de texto para los inputs
+        
+        &::placeholder {
+          color: rgba($dark-layout-font, 0.6); // Color más claro para los placeholders
+        }
+        
+        &:focus {
+          border-color: $form-bg; // Borde cuando el input está enfocado
+          box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25); // Sombra cuando el input está enfocado
+        }
+      }
+      
+      .form-label {
+        color: $theme-heading-color; // Color para las etiquetas
+      }
+      
+      .text-danger {
+        color: $danger-color !important; // Color para los mensajes de error
+      }
+    }
+  
+    .modal-footer {
+      border-top: 1px solid $theme-border; // Borde superior del footer
+      
+      .btn-secondary {
+        background-color: $secondary-color; // Color para el botón secundario
+        border-color: $secondary-color;
+        color: $white;
+        
+        &:hover {
+          background-color: darken($secondary-color, 10%); // Color hover para el botón secundario
+          border-color: darken($secondary-color, 10%);
+        }
+      }
+      
+      .btn-primary {
+  
+        background: rgba(33, 150, 243, 0.2); /* Azul translúcido */
+        color: #FFFFFF;
+        border: 1px solid rgba(33, 150, 243, 0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: rgba(55, 144, 232, 0.518); /* Azul más oscuro al hacer hover */
+            border: 1px solid rgba(25, 118, 210, 0.6);
+        }
+      }
+
+      .btn-secondary {
+        background: rgba(183, 28, 28, 0.2); /* Rojo oscuro translúcido */
+        color: #FFFFFF;
+        border: 1px solid rgba(183, 28, 28, 0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: rgba(192, 30, 30, 0.3); /* Rojo más oscuro al hacer hover */
+            border: 1px solid rgba(142, 22, 22, 0.6);
+        }
+      }
+    }
+  }
+
+
+// Estilos para el tabla de mostrar los usuarios
+
+// Estilos para la tabla responsive
+.table-responsive {
+    border-radius: 15px;
+    // Estilo base de la tabla
+    .table {
+      
+      // Encabezado de la tabla
+      thead {
+        tr {
+          background-color: $dark-layout; // Fondo oscuro para los encabezados
+          
+          //Color de texto encabezados tablas
+          th {
+            color: $brand-background;
+            background-color: $dark-layout; // Color claro para texto de encabezados
+            padding: 0.75rem;
+            font-weight: 600;
+            vertical-align: middle;
+          }
+        }
+      }
+      
+      // Cuerpo de la tabla
+      tbody {
+        tr {
+          border-bottom: 1px solid $theme-border; // Borde inferior para cada fila
+          
+          &:hover {
+            background-color: rgba($dark-color, 0.1); // Efecto hover sutíl
+          }
+          
+          // Estilo para filas alternas (stripped)
+          &:nth-of-type(odd) {
+            background-color: rgba($dark-color, 0.05); // Fondo ligeramente más claro para filas impares
+          }
+          
+          // Estilo para celdas y titulo
+          td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            color: $header-dark-text-color; // Color de texto para celdas
+            background-color: $dark-layout;
+            
+            // Estilos específicos para mensaje "No hay registros disponibles"
+            &.text-center {
+              &[colspan="6"] {
+                padding: 2rem;
+                font-style: italic;
+                color: rgba($dark-layout-font, 0.7); // Color ligeramente más apagado
+              }
+            }
+          }
+        }
+      }
+      
+      // Estilos para botones dentro de la tabla
+      .btn-outline-primary {
+        color: $primary-color;
+        border-color: $form-bg;
+        border-radius: 10px;
+        
+        &:hover {
+          background-color: $secondary-color;
+          color: $dark-color;
+        }
+        
+        // Estilos para los iconos
+        .fa {
+          font-size: 0.9rem;
+        }
+      }
+      
+      // Estilos para estados (Si/No)
+      td:nth-child(5) {
+        &:contains('Si') {
+          color: $success-color; // Color verde para estado activo
+        }
+        
+        &:contains('No') {
+          color: $danger-color; // Color rojo para estado inactivo
+        }
+      }
+    }
+    
+    // Estilos específicos para tabla responsive en pantallas pequeñas
+    @media (max-width: 768px) {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      
+      .table {
+        min-width: 600px; // Asegura un ancho mínimo para desplazamiento
+      }
+    }
+  }
+
