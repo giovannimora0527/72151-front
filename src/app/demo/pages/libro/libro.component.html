@@ -1,1 +1,120 @@
-<p>libro works!</p>
+<div *ngIf="form.get('nombreLibro')?.touched && form.get('nombreLibro')?.hasError('required')" class="text-danger">
+    El nombre del libro es requerido.
+</div>
+<div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-primary btn-sm" (click)="crearLibroModal()"
+            title="Crear un libro nuevo"  >
+            <i class="fa fa-plus"></i>&nbsp;Crear Libro</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="table table-responsive">
+                  <table class="table table-responsive table-stripped">
+                    <thead>
+                      <tr>
+                        <th>Nombre del Libro</th>
+                        <th>Autor</th>
+                        <th>Año de publicación</th>
+                        <th>Categoria</th>
+                        <th>Existencias</th>
+                        <th class="text-center">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="libros.length == 0">
+                      <tr>
+                        <td colspan="6" class="text-center">No hay registros disponibles</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="libros.length > 0">
+                      <tr *ngFor="let libro of libros">
+                        <td>
+                          {{ libro.titulo }}
+                        </td>
+                        <td>
+                          {{ libro.autor.nombre }}
+                        </td>
+                        <td>
+                          {{ libro.anioPublicacion }}
+                        </td>
+                        <td>
+                          {{ libro.categoria }}
+                        </td>
+                        <td>
+                          {{ libro.existencias }}
+                        </td>
+                        <td class="text-center">
+                          <button class="btn btn-outline-primary btn-sm" title="Editar Libro">
+                            <i class="fa fa-edit"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="crearLibroModal" tabindex="-1" aria-labelledby="crearLibroModalLabel" aria-hidden="true"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="crearLibroModalLabel">Crear Libro</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <form>
+                    <div class="mb-3">
+                          <label for="titleLibro" class="form-label">Titulo del Libro</label>
+                          <input type="text" class="form-control" id="titleLibro" placeholder="Ingrese el titulo del libro">
+                          <div *ngIf="form.get('titleLibro')?.touched && form.get('titleLibro')?.hasError('required')" 
+                          class="text-danger">
+                              El titulo del libro es requerido.
+                          </div>
+                      </div>                    
+                    <div class="mb-3">
+                          <label for="anio_publicacion" class="form-label">Año de Publicación</label>
+                          <input type="number" class="form-control" id="anio_publicacion" placeholder="Ingrese el año de publicación">
+                          <div *ngIf="form.get('anio_publicacion')?.touched && form.get('anio_publicacion')?.hasError('required')" 
+                            class="text-danger">
+                                El año de publicación del libro es requerido.
+                          </div>
+                      </div>
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Titulo del Libro</label>
+                        <input type="text" class="form-control" id="categoria" placeholder="Ingrese la categoria del libro">
+                        <div *ngIf="form.get('categoria')?.touched && form.get('categoria')?.hasError('required')" 
+                          class="text-danger">
+                              La categoria del libro es requerida.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="existencias" class="form-label">Titulo del Libro</label>
+                      <input type="number" class="form-control" id="existencias" placeholder="Ingrese las existencias del libro">
+                      <div *ngIf="form.get('existencias')?.touched && form.get('existencias')?.hasError('required')" 
+                        class="text-danger">
+                            Las existencias del libro son requeridas.
+                      </div>
+                  </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                  (clic)="cerrarModal()">Cerrar</button>
+                  <button type="button" class="btn btn-primary">Guardar</button>
+              </div>
+          </div>
+      </div>
+  </div>

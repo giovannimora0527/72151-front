@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+// ** Angular Imports Components*/ 
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AutorComponent } from './demo/pages/autor/autor.component';
+import { LibroComponent } from './demo/pages/libro/libro.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +19,7 @@ export const routes: Routes = [
     children: [      
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
       { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
-      { path: 'libros', component: AutorComponent, data: { title: 'Libros' }} 
+      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }}
     ]
   },
   { path: '**', redirectTo: 'inicio' }
