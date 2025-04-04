@@ -8,13 +8,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 declare var bootstrap: any;
 
 @Component({
-  selector: 'app-usuario',
+  selector: 'app-libro',
   imports: [CommonModule],
-  templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.scss'
+  templateUrl: './libro.component.html',
+  styleUrl: './libro.component.scss'
 })
-export class UsuarioComponent {
-  usuarios: Usuario[] = [];
+export class LibroComponent {
+  libros: Libro[] = [];
   modalInstance: any;
 
   form: FormGroup = new FormGroup({
