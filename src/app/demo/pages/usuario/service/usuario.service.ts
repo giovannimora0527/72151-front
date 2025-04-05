@@ -28,7 +28,7 @@ export class UsuarioService {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
   }
 
-  actualizarUsuario(user: Usuario) : Observable<Usuario> {
+  actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
   }
 }
