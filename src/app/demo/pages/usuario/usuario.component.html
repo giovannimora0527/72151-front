@@ -112,6 +112,15 @@
               El teléfono es requerido.
             </div>
           </div>
+
+          <div class="mb-3">
+            <label for="activo" class="form-label">Estado</label>
+            <select class="form-control" id="activo"
+            formControlName="activo">
+              <option [value]="true">Activo</option>
+              <option [value]="false">Inactivo</option>
+            </select>           
+          </div>
         </form>
       </div>
       <div class="modal-footer">
