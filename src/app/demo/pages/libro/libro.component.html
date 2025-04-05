@@ -1,0 +1,123 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearLibroModal('C')" title="Crear un libro nuevo">
+            <i class="fa fa-plus"></i>
+            <span class="sr-only">Crear un libro nuevo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Nombre completo</th>
+                      <th>Correo</th>
+                      <th>Año Publicación</th>
+                      <th>categoria</th>
+                      <th>Estado</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="libros.length === 0">
+                      <td colspan="6" class="text-center">No hay registros disponibles</td>
+                    </tr>
+                    <tr *ngFor="let libro of libros">
+                      <td>{{ libro.titulo }}</td>
+                      <td>{{ libro.autor }}</td>
+                      <td>{{ libro.anioPublicacion }}</td>
+                      <td>{{ libro.categoria }}</td>
+                      <td>{{ libro.activo ? 'Si' : 'No' }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar libro" (click)="abrirModoEdicion(libro)">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="crearLibroModal"
+  tabindex="-1"
+  aria-labelledby="crearLibroModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearLibroModalLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar modal"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label for="titulo" class="form-label">Nombre Completo</label>
+            <input
+              type="text"
+              formControlName="titulo"
+              class="form-control"
+              id="titulo"
+              placeholder="Ingrese el título completo"
+            />
+            <div *ngIf="form.get('titulo')?.invalid && (form.get('titulo')?.touched || form.get('titulo')?.dirty)" class="text-danger">
+              El título completo es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="anioPublicacion" class="form-label">Año Publicación</label>
+            <input
+              type="number"
+              formControlName="anioPublicacion"
+              class="form-control"
+              id="anioPublicacion"
+              placeholder="Ingrese el año del libro"
+            />
+            <div *ngIf="form.get('anioPublicacion')?.invalid && (form.get('anioPublicacion')?.touched || form.get('anioPublicacion')?.dirty)" class="text-danger">
+              El año del libro es requerido.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <input
+              type="text"
+              formControlName="categoria"
+              class="form-control"
+              id="categoria"
+              placeholder="Ingrese la categoría"
+            />
+            <div *ngIf="form.get('categoria')?.invalid && (form.get('categoria')?.touched || form.get('categoria')?.dirty)" class="text-danger">
+              La categoría es requerida.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarLibro()">{{ titleModal }}</button>
+      </div>
+    </div>
+  </div>
+</div>

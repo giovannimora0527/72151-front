@@ -52,12 +52,10 @@ export class UsuarioComponent {
   cargarListaUsuarios() {
     this.usuarioService.getUsuarios().subscribe({
       next: (data) => {
-        console.log('Usuarios recibidos:', data);
+        console.log(data);
         this.usuarios = data;
       },
       error: (error) => {
-        console.error('Error al cargar los usuarios:', error);
-        Swal.fire('Error', error.error.message, 'error');
         this.messageUtils.showMessage('Error', error.error.message, 'error');
       }
     });
