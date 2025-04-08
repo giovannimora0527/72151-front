@@ -38,5 +38,6 @@ export class NavigationComponent {
     if (this.windowWidth < 992) {
       this.NavCollapsedMob.emit();
     }
+    
   }
 }
