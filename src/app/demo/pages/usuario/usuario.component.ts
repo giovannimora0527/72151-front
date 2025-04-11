@@ -30,7 +30,7 @@ export class UsuarioComponent {
   });
 
   constructor(
-    private usuarioService: UsuarioService,
+    private readonly usuarioService: UsuarioService,
     private formBuilder: FormBuilder,
     private messageUtils: MessageUtils
   ) {
@@ -109,6 +109,9 @@ export class UsuarioComponent {
   guardarActualizarUsuario() {
     console.log('Entro');
     console.log(this.form.valid);
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo').setValue(true);
+    }
     if (this.form.valid) {
       console.log(this.form.getRawValue());
       console.log('El formualario es valido');     

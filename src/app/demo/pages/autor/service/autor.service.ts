@@ -1,27 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../../../services/backend.service';
 import { environment } from 'src/environments/environment'
+import { Observable } from 'rxjs';
+import { Autor } from 'src/app/models/autor';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutorService {
-  api = environment.apiUrl;
+  api = "autor";
 
   constructor(private backendService: BackendService) { 
-    this.test();
+   
   }
 
-  test() {
-    this.backendService.get(this.api, "app", "test").subscribe(
-      {
-        next: (data) => {
-          console.log(data);
-        },
-        error: (error) => {
-          console.log(error);
-        },
-      }
-    );
+  listarAutores(): Observable<Autor[]>  {
+    return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 }

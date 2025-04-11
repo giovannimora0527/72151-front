@@ -13,11 +13,7 @@ export class UsuarioService {
   private api = `usuario`;
 
   constructor(private backendService: BackendService) { 
-    this.testService();
-  }
-
-  testService() {
-    this.backendService.get(environment.apiUrl, this.api, "test");
+    
   }
 
   getUsuarios(): Observable<Usuario[]> {
