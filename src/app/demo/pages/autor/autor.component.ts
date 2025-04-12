@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { Autor } from 'src/app/models/autor';
-import { AutorService } from './service/autor.service';
 import { CommonModule } from '@angular/common';
-import Swal, { SweetAlertIcon } from 'sweetalert2';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AutorService } from './service/autor.service';
+import { Autor } from 'src/app/models/autor';
+import { MessageUtils } from 'src/app/utils/message-utils';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 
 declare var bootstrap: any;
 
 
 @Component({
   selector: 'app-autor',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './autor.component.html',
   styleUrl: './autor.component.scss'
 })
@@ -19,16 +19,21 @@ declare var bootstrap: any;
 export class AutorComponent {
   autores: Autor[] = [];
   modalInstance: any;
+  titleModal: string = "";
+  modoFormulario: string = '';
+
+  autorSelected: Autor;
 
   form: FormGroup = new FormGroup({
-    nombreAutor: new FormControl(''),
+    nombre: new FormControl(''),
     nacionalidad: new FormControl(''),
     fechaNacimiento: new FormControl('')
   });
 
   constructor(
     private autorService: AutorService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageUtils: MessageUtils
   ) {
     this.cargarListaAutores();
     this.cargarFormulario();
@@ -36,7 +41,7 @@ export class AutorComponent {
 
   cargarFormulario(){
     this.form = this.formBuilder.group({
-      nombreAutor: ['', [Validators.required]],
+      nombre: ['', [Validators.required]],
       nacionalidad: ['', [Validators.required]],
       fechaNacimiento: ['', [Validators.required]]
     });
@@ -49,10 +54,14 @@ export class AutorComponent {
         this.autores = data;
       },
       error: (error) => {
-        Swal.fire('Error', error.error.message, 'error');
+        this.messageUtils.showMessage('Error', error.error.message, 'error');
       }
     });
   }
+
+  get f(): { [key: string]: AbstractControl } {
+      return this.form.controls;
+    }
 
   cargarAutorModal(){
     const modalElement = document.getElementById('crearAutorModal');
@@ -65,8 +74,12 @@ export class AutorComponent {
     } 
   }
 
-  crearAutorModal(){
+  crearAutorModal(modoForm: string) {
+    this.modoFormulario = modoForm;
     const modalElement = document.getElementById('crearAutorModal');
+    modalElement.blur();
+    modalElement.setAttribute('aria-hidden', 'false');
+    this.titleModal = modoForm == "C"? "Crear Autor": "Actualizar Autor";
     if (modalElement) {
       // Verificar si ya existe una instancia del modal
       if (!this.modalInstance) {
@@ -76,12 +89,67 @@ export class AutorComponent {
     }
   }
 
-  cerrarModal(){
+  cerrarModal() { 
     this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      nombre: "",
+      nacionalidad: "",
+      fechaNacimiento: ""
+    });
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.autorSelected = null;
   }
+
+
+    abrirModoEdicion(autor: Autor) {
+      this.autorSelected = autor;
+      this.form.patchValue({
+        nombre: this.autorSelected.nombre,
+        nacionalidad: this.autorSelected.nacionalidad,
+        fechaNacimiento: this.autorSelected.fechaNacimiento,
+      });
+      this.crearAutorModal('C');
+      console.log(this.autorSelected);
+      console.log(this.autorSelected.idAutor);
+    }
+
+    guardarActualizarAutor() {
+      console.log('Entro el autor');
+      console.log(this.form.valid);
+      if (this.form.valid) {
+        const autorUpdate = this.form.getRawValue();
+        console.log('El formulario es valido');
+        
+        this.autorSelected = {
+          ...this.autorSelected,
+          ...this.form.getRawValue()
+        };
+        console.log(autorUpdate); 
+        console.log(this.form.getRawValue())            
+        this.autorService.actualizarAutor(this.autorSelected)
+        .subscribe(
+          {
+            next: (data) => {
+              console.log(data);
+              this.cerrarModal();
+              this.cargarListaAutores();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
+            },
+            error: (error) => {
+              console.log(error);
+              this.messageUtils.showMessage("Error", error.error.message, "error");
+            }
+          }
+        );
+        }
+      }
 }
+
+    
+
 
 

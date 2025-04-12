@@ -1,4 +1,4 @@
-<div *ngIf="form.get('nombreAutor')?.touched && form.get('nombreAutor')?.hasError('required')" class="text-danger">
+<div *ngIf="form.get('nombre')?.touched && form.get('nombre')?.hasError('required')" class="text-danger">
     El nombre es requerido.
 </div>
 <div class="container">
@@ -6,7 +6,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col">
-            <button class="btn btn-outline-primary btn-sm" (click)="crearAutorModal()"
+            <button class="btn btn-outline-primary btn-sm" (click)="crearAutorModal('C')"
             title="Crear un autor nuevo"  >
             <i class="fa fa-plus"></i>&nbsp;Crear Autor</button>
           </div>
@@ -39,10 +39,11 @@
                           {{ autor.nacionalidad }}
                         </td>
                         <td>
-                          {{ autor.fechaNacimiento }}
+                          {{ autor.fechaNacimiento}}
                         </td>
                         <td class="text-center">
-                          <button class="btn btn-outline-primary btn-sm" title="Editar Autor">
+                          <button class="btn btn-outline-primary btn-sm" title="Editar autor"
+                          (click)="abrirModoEdicion(autor)">
                             <i class="fa fa-edit"></i>
                           </button>
                         </td>
@@ -58,7 +59,61 @@
     </div>
   </div>
   
-  <div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel" aria-hidden="true"
+<div
+  class="modal fade"
+  id="crearAutorModal"
+  tabindex="-1"
+  aria-labelledby="crearAutorModalLabel" 
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="crearAutorModalLabel">{{titleModal}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+
+      <form [formGroup]="form">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre Completo</label>
+          <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
+          [ngModel]="autorSelected?.nombre"/>
+          <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+            El nombre completo es requerido.
+          </div>
+        </div>
+      
+        <div class="mb-3">
+          <label for="nacionalidad" class="form-label">Nacionalidad</label>
+          <input type="text" formControlName="nacionalidad" class="form-control" id="nacionalidad" placeholder="Ingrese la nacionalidad" 
+          [ngModel]="autorSelected?.nacionalidad"/>
+          <div *ngIf="form.get('nacionalidad')?.hasError('required') && form.get('nacionalidad')?.touched" class="text-danger">
+            La nacionalidad es requerida.
+          </div>
+        </div>
+      
+        <div class="mb-3">
+          <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+          <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento" placeholder="Ingrese la fecha de nacimiento" 
+          [ngModel]="autorSelected?.fechaNacimiento"/>
+          <div *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched" class="text-danger">
+            La fecha de nacimiento es requerida.
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+      <button type="button" class="btn btn-primary" (click)="guardarActualizarAutor()">{{titleModal}}</button>
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- <div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel" aria-hidden="true"
   data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog">
           <div class="modal-content">
@@ -69,9 +124,9 @@
               <div class="modal-body">
                   <form>
                       <div class="mb-3">
-                          <label for="nombreAutor" class="form-label">Nombre Completo</label>
+                          <label for="nombre" class="form-label">Nombre Completo</label>
                           <input type="text" class="form-control" id="nombreAutor" placeholder="Ingrese el nombre completo">
-                          <div *ngIf="form.get('nombreAutor').touched && form.get('nombreAutor')?.hasError('required')" 
+                          <div *ngIf="form.get('nombre').touched && form.get('nombre')?.hasError('required')" 
                           class="text-danger">
                               El nombre completo es requerido.
                           </div>
@@ -101,4 +156,4 @@
               </div>
           </div>
       </div>
-  </div>
+  </div> -->
