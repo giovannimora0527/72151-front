@@ -7,6 +7,8 @@ import { FormGroup, FormControl, FormBuilder, FormsModule, ReactiveFormsModule, 
 import { LibroService } from './service/libro.service';
 import { AutorService } from '../autor/service/autor.service';
 import { Autor } from 'src/app/models/autor';
+import { CategoriaService } from 'src/app/services/categoria.service';
+import { Categoria } from 'src/app/models/categoria';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
@@ -22,13 +24,14 @@ export class LibroComponent {
   modoFormulario: string = '';
   libros: Libro[] = [];
   autores: Autor[] = [];
+  categorias: Categoria[] = [];
   libroSelected: Libro;
 
   form: FormGroup = new FormGroup({
     titulo: new FormControl(''),
     anioPublicacion: new FormControl(''),
     autorId: new FormControl(''),
-    categoria: new FormControl(''),
+    categoriaId: new FormControl(''),
     existencias: new FormControl('')
   });
 
@@ -36,11 +39,27 @@ export class LibroComponent {
     private readonly messageUtils: MessageUtils,
     private readonly formBuilder: FormBuilder,
     private readonly libroService: LibroService,
-    private readonly autorService: AutorService
+    private readonly autorService: AutorService,
+    private readonly categoriaService: CategoriaService
   ) {
     this.cargarLibros();
     this.cargarFormulario();
     this.cargarAutores();
+    this.cargarCategorias();
+  }
+
+  cargarCategorias() {
+    this.categoriaService.getCategorias().subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          this.categorias = data;
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      }
+    );
   }
 
   cargarAutores() {
@@ -62,7 +81,7 @@ export class LibroComponent {
       titulo: ['', [Validators.required]],
       anioPublicacion: ['', [Validators.required]],
       autorId: ['', [Validators.required]],
-      categoria: ['', [Validators.required]],
+      categoriaId: ['', [Validators.required]],
       existencias: ['', [Validators.required]]
     });
   }
@@ -73,8 +92,7 @@ export class LibroComponent {
 
   cargarLibros() {
     this.libroService.getLibros().subscribe({
-      next: (data) => {
-        console.log(data);
+      next: (data) => {       
         this.libros = data;
       },
       error: (error) => {
@@ -103,10 +121,12 @@ export class LibroComponent {
     this.form.patchValue({
       titulo: this.libroSelected.titulo,
       existencias: this.libroSelected.existencias,
-      categoria: this.libroSelected.categoria,
+      categoriaId: this.libroSelected.categoria.categoriaId,
       anioPublicacion: this.libroSelected.anioPublicacion,
-      idAutor: this.libroSelected.autor.idAutor
-    });
+      autorId: this.libroSelected?.autor?.autorId
+    });    
+    console.log(this.form);
+    console.log(this.libroSelected);
     this.crearModal('E');
     console.log(this.libroSelected);
   }
@@ -120,11 +140,41 @@ export class LibroComponent {
       anioPublicacion: '',
       exitencias: '',
       autorId: '',
-      categoria: ''
+      categoriaId: ''
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
     this.libroSelected = null;
+  }
+
+
+  guardarActualizar() {
+    console.log(this.form.getRawValue());
+    if (this.form.valid) {
+      if (this.modoFormulario === 'C') {
+        console.log("Crear");
+        this.libroService.crearLibro(this.form.getRawValue())
+        .subscribe(
+          {
+            next: (data) => {
+              console.log(data.message);
+              this.cerrarModal();
+              this.cargarLibros();
+            },
+            error: (error) => {
+              console.log(error);
+              this.messageUtils.showMessage("Error", error.error.message, "error")  
+            }
+          }
+        );
+      } else {
+        console.log("Actualizar");
+      }
+    } else {
+      this.messageUtils.showMessage("Advertencia", "El formulario no es valido", "warning")
+    }
+
+    
   }
 }

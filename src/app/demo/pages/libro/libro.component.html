@@ -44,7 +44,7 @@
                         {{ libro.anioPublicacion }}
                       </td>
                       <td>
-                        {{ libro.categoria }}
+                        {{ libro.categoria.nombre }}
                       </td>
                       <td>
                         {{ libro.existencias}}
@@ -104,31 +104,35 @@
                 <div *ngIf="form.get('existencias')?.hasError('required') && form.get('existencias')?.touched" class="text-danger">
                   La cantidad de existencias es requerido.
                 </div>
-              </div>
-              <div class="mb-3">
-                <label for="categoria" class="form-label">Categoria</label>
-                <input type="text" formControlName="categoria" class="form-control" id="categoria" placeholder="Ingrese el nombre completo" 
-                [ngModel]="libroSelected?.categoria"/>
-                <div *ngIf="form.get('categoria')?.hasError('required') && form.get('categoria')?.touched" class="text-danger">
-                  La categoría del libro es requerido.
-                </div>
-              </div>
+              </div>              
               <div class="mb-3">
                 <label for="autorId" class="form-label">Autor</label>
-                <select class="form-select">
+                <select class="form-select"
+                formControlName="autorId" id="autorId" placeholder="Seleccione un autor">
                     <option [value]="" disabled>Seleccione una opción</option>
-                    <option *ngFor="let autor of autores" [value]="autor.idAutor" 
-                    [selected]="libroSelected?.autor.idAutor === autor.idAutor">{{ autor.nombre }}</option>
+                    <option *ngFor="let a of autores"
+                    [value]="a.autorId">{{ a.nombre }}</option>
                 </select>
                 <div *ngIf="form.get('autorId')?.hasError('required') && form.get('autorId')?.touched" class="text-danger">
                   El autor es requerido.
+                </div> 
+              </div>
+              <div class="mb-3">
+                <label for="categoriaId" class="form-label">Categoria</label>
+                <select class="form-select" 
+                formControlName="categoriaId" id="categoriaId">
+                  <option [value]="" disabled>Seleccione una categoria o género de libro</option>
+                  <option [value]="c.categoriaId" *ngFor="let c of categorias">{{c.nombre}}</option>
+                </select>
+                <div *ngIf="form.get('categoriaId')?.hasError('required') && form.get('categoriaId')?.touched" class="text-danger">
+                  La categoría del libro es requerido.
                 </div>
               </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary">{{titleModal}}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizar()">{{titleModal}}</button>
       </div>
     </div>
   </div>
