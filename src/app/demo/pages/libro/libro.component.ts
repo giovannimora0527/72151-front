@@ -1,140 +1,180 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl
-} from '@angular/forms';
-import { LibroService } from './service/libro.service';
-import { Libro } from 'src/app/models/libro';
-import { libroRq } from 'src/app/models/libroRq';
 import { MessageUtils } from 'src/app/utils/message-utils';
+import { Libro } from 'src/app/models/libro';
+import { FormGroup, FormControl, FormBuilder, FormsModule, ReactiveFormsModule, AbstractControl, Validators } from '@angular/forms';
+import { LibroService } from './service/libro.service';
+import { AutorService } from '../autor/service/autor.service';
+import { Autor } from 'src/app/models/autor';
+import { CategoriaService } from 'src/app/services/categoria.service';
+import { Categoria } from 'src/app/models/categoria';
+// Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
 @Component({
   selector: 'app-libro',
-  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './libro.component.html',
-  styleUrls: ['./libro.component.scss']
+  styleUrl: './libro.component.scss'
 })
-export class LibroComponent implements OnInit {
-  libros: Libro[] = [];
+export class LibroComponent {
   modalInstance: any;
-  modoFormulario: 'C' | 'E' = 'C';
-  titleModal = '';
-  libroSelected!: Libro;
+  titleModal: string = '';
+  modoFormulario: string = '';
+  libros: Libro[] = [];
+  autores: Autor[] = [];
+  categorias: Categoria[] = [];
+  libroSelected: Libro;
 
-  form: FormGroup;
+  form: FormGroup = new FormGroup({
+    titulo: new FormControl(''),
+    anioPublicacion: new FormControl(''),
+    autorId: new FormControl(''),
+    categoriaId: new FormControl(''),
+    existencias: new FormControl('')
+  });
 
   constructor(
-    private libroService: LibroService,
-    private fb: FormBuilder,
-    private messageUtils: MessageUtils
+    private readonly messageUtils: MessageUtils,
+    private readonly formBuilder: FormBuilder,
+    private readonly libroService: LibroService,
+    private readonly autorService: AutorService,
+    private readonly categoriaService: CategoriaService
   ) {
-    // Inicializa el formulario con validaciones
-    this.form = this.fb.group({
-      titulo: ['', [Validators.required, Validators.minLength(3)]],
-      anioPublicacion: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
-      categoria: ['', [Validators.required, Validators.minLength(3)]]
-    });
+    this.cargarLibros();
+    this.cargarFormulario();
+    this.cargarAutores();
+    this.cargarCategorias();
   }
 
-  ngOnInit() {
-    this.cargarListaLibros();
+  cargarCategorias() {
+    this.categoriaService.getCategorias().subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          this.categorias = data;
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      }
+    );
+  }
+
+  cargarAutores() {
+    this.autorService.listarAutores().subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          this.autores = data;
+        },
+        error: (error) => {
+          console.log(error)
+        }
+      }
+    );
+  }
+
+  cargarFormulario() {
+    this.form = this.formBuilder.group({
+      titulo: ['', [Validators.required]],
+      anioPublicacion: ['', [Validators.required]],
+      autorId: ['', [Validators.required]],
+      categoriaId: ['', [Validators.required]],
+      existencias: ['', [Validators.required]]
+    });
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  cargarListaLibros() {
+  cargarLibros() {
     this.libroService.getLibros().subscribe({
-      next: (data: Libro[]) => {
+      next: (data) => {       
         this.libros = data;
       },
-      error: (err) => {
-        this.messageUtils.showMessage(
-          'Error',
-          err.error?.message ?? 'Error al cargar libros',
-          'error'
-        );
+      error: (error) => {
+        console.log(error);
       }
     });
   }
 
-  crearLibroModal(modo: 'C' | 'E') {
-    this.modoFormulario = modo;
-    this.titleModal = modo === 'C' ? 'Crear Libro' : 'Actualizar Libro';
-
-    const modalEl = document.getElementById('crearLibroModal');
-    if (modalEl) {
-      this.modalInstance = this.modalInstance || new bootstrap.Modal(modalEl);
+  crearModal(modoForm: string) {
+    this.modoFormulario = modoForm;
+    const modalElement = document.getElementById('crearModal');
+    modalElement.blur();
+    modalElement.setAttribute('aria-hidden', 'false');
+    this.titleModal = modoForm == 'C' ? 'Crear Libro' : 'Actualizar Libro';
+    if (modalElement) {
+      // Verificar si ya existe una instancia del modal
+      if (!this.modalInstance) {
+        this.modalInstance = new bootstrap.Modal(modalElement);
+      }
       this.modalInstance.show();
     }
-  }
-
-  cerrarModal() {
-    this.form.reset({
-      titulo: '',
-      anioPublicacion: '',
-      categoria: ''
-    });
-    this.modalInstance?.hide();
   }
 
   abrirModoEdicion(libro: Libro) {
     this.libroSelected = libro;
     this.form.patchValue({
-      titulo: libro.titulo,
-      anioPublicacion: libro.anioPublicacion,
-      categoria: libro.categoria
-    });
-    this.crearLibroModal('E');
+      titulo: this.libroSelected.titulo,
+      existencias: this.libroSelected.existencias,
+      categoriaId: this.libroSelected.categoria.categoriaId,
+      anioPublicacion: this.libroSelected.anioPublicacion,
+      autorId: this.libroSelected?.autor?.autorId
+    });    
+    console.log(this.form);
+    console.log(this.libroSelected);
+    this.crearModal('E');
+    console.log(this.libroSelected);
   }
 
-  guardarActualizarLibro() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+  cerrarModal() {
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      titulo: '',
+      anioPublicacion: '',
+      exitencias: '',
+      autorId: '',
+      categoriaId: ''
+    });
+    if (this.modalInstance) {
+      this.modalInstance.hide();
     }
+    this.libroSelected = null;
+  }
 
-    const payload: libroRq = this.form.value;
 
-    if (this.modoFormulario === 'C') {
-      this.libroService.crearLibro(payload).subscribe({
-        next: (res) => {
-          this.messageUtils.showMessage('Éxito', res.message, 'success');
-          this.cerrarModal();
-          this.cargarListaLibros();
-        },
-        error: (err) =>
-          this.messageUtils.showMessage(
-            'Error',
-            err.error?.message ?? 'Error al crear libro',
-            'error'
-          )
-      });
+  guardarActualizar() {
+    console.log(this.form.getRawValue());
+    if (this.form.valid) {
+      if (this.modoFormulario === 'C') {
+        console.log("Crear");
+        this.libroService.crearLibro(this.form.getRawValue())
+        .subscribe(
+          {
+            next: (data) => {
+              console.log(data.message);
+              this.cerrarModal();
+              this.cargarLibros();
+            },
+            error: (error) => {
+              console.log(error);
+              this.messageUtils.showMessage("Error", error.error.message, "error")  
+            }
+          }
+        );
+      } else {
+        console.log("Actualizar");
+      }
     } else {
-      this.libroService
-        .actualizarLibro(this.libroSelected.idLibro, payload)
-        .subscribe({
-          next: (res) => {
-            this.messageUtils.showMessage('Éxito', res.message, 'success');
-            this.cerrarModal();
-            this.cargarListaLibros();
-          },
-          error: (err) =>
-            this.messageUtils.showMessage(
-              'Error',
-              err.error?.message ?? 'Error al actualizar libro',
-              'error'
-            )
-        });
+      this.messageUtils.showMessage("Advertencia", "El formulario no es valido", "warning")
     }
+
+    
   }
 }

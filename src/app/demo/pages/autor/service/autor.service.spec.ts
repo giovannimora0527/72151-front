@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { AutorService } from './autor.service';
 
-describe('AutorService', () => {
-  let service: AutorService;
+describe('UsuarioService', () => {
+  let service: UsuarioService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});

@@ -1,1 +1,113 @@
-<p>autor works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearAutorModal('C')" title="Crear un autor nuevo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table table-responsive">
+                <table class="table table-responsive table-stripped">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Nacionalidad</th>
+                      <th>Fecha nacimiento</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="autor.length === 0">
+                    <tr>
+                      <td colspan="6" class="text-center">No hay registros disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="autor.length > 0">
+                    <tr *ngFor="let autor of autor">
+                      <td>
+                        {{ autor.nombre }}
+                      </td>
+                      <td>
+                        {{ autor.nacionalidad }}
+                      </td>
+                      <td>
+                        {{ autor.fechaNacimiento }}
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar autor"
+                        (click)="abrirModoEdicion(autor)">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="crearAutorModal"
+  tabindex="-1"
+  aria-labelledby="crearAutorModalLabel" 
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearAutorModalLabel">{{titleModal}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
+            [ngModel]="autorSelected?.nombre"/>
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre completo es requerido.
+            </div>
+          </div>
+        
+          <div class="mb-3">
+            <label for="nacionaloidad" class="form-label">Nacionalidad</label>
+            <input type="text" formControlName="nacionalidad" class="form-control" id="nacionalidad" placeholder="Ingrese el teléfono" 
+            [ngModel]="autorSelected?.telefono"/>
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+              El teléfono es requerido.
+            </div>
+          </div>
+        
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
+            [ngModel]="autorSelected?.telefono"/>
+            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+              El teléfono es requerido.
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarAutor()">{{titleModal}}</button>
+      </div>
+    </div>
+  </div>
+</div>
