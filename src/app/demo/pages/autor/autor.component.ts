@@ -88,7 +88,7 @@ export class AutorComponent {
       this.modalInstance.show();
     }
   }
-
+  
   cerrarModal() { 
     this.form.reset();
     this.form.markAsPristine();
@@ -105,31 +105,49 @@ export class AutorComponent {
   }
 
 
-    abrirModoEdicion(autor: Autor) {
-      this.autorSelected = autor;
-      this.form.patchValue({
-        nombre: this.autorSelected.nombre,
-        nacionalidad: this.autorSelected.nacionalidad,
-        fechaNacimiento: this.autorSelected.fechaNacimiento,
-      });
-      this.crearAutorModal('C');
-      console.log(this.autorSelected);
-      console.log(this.autorSelected.idAutor);
-    }
+  abrirModoEdicion(autor: Autor) {
+    this.autorSelected = autor;
+    this.form.patchValue({
+      nombre: this.autorSelected.nombre,
+      nacionalidad: this.autorSelected.nacionalidad,
+      fechaNacimiento: this.autorSelected.fechaNacimiento,
+    });
+    this.crearAutorModal('E'); // Cambiar a 'E' para indicar modo edición
+    console.log(this.autorSelected);
+    console.log(this.autorSelected.idAutor);
+  }
 
-    guardarActualizarAutor() {
-      console.log('Entro el autor');
-      console.log(this.form.valid);
-      if (this.form.valid) {
-        const autorUpdate = this.form.getRawValue();
-        console.log('El formulario es valido');
-        
+  guardarActualizarAutor() {
+    console.log('Entro el autor');
+    console.log(this.form.valid);
+    if (this.form.valid) {
+      console.log(this.form.getRawValue());
+      console.log('El formulario es válido');
+      if (this.modoFormulario === 'C') {
+        console.log('Creamos un autor nuevo');
+        this.autorService.crearAutor(this.form.getRawValue())
+        .subscribe(
+          {
+            next: (data) => {
+              console.log(data);
+              this.cerrarModal();
+              this.cargarListaAutores();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
+            },
+            error: (error) => {
+              console.log(error);
+              this.messageUtils.showMessage("Error", error.error.message, "error");
+            }
+          }
+        );
+      } else {
+        console.log('Actualizamos un autor existente');
+        const idAutor = this.autorSelected.idAutor;
         this.autorSelected = {
-          ...this.autorSelected,
+          idAutor: idAutor,
           ...this.form.getRawValue()
         };
-        console.log(autorUpdate); 
-        console.log(this.form.getRawValue())            
+        console.log(this.autorSelected);
         this.autorService.actualizarAutor(this.autorSelected)
         .subscribe(
           {
@@ -145,11 +163,12 @@ export class AutorComponent {
             }
           }
         );
-        }
       }
+    }
+  }
 }
 
-    
+
 
 
 
