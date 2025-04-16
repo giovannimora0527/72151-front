@@ -1,6 +1,8 @@
-export class Autor {
-    autorId: number;
-    nombre: string;
-    nacionalidad?: string;
-    fechaNacimiento?: Date;
+import { Nacionalidad } from './Nacionalidad';
+
+export interface Autor {
+  id?: number;
+  nombre: string;
+  fechaNacimiento: Date;
+  nacionalidad: Nacionalidad;
 }

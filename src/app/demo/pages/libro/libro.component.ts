@@ -67,7 +67,8 @@ export class LibroComponent {
       {
         next: (data) => {
           console.log(data);
-          this.autores = data;
+            this.autores = data as Autor[];
+            console.log('Autores cargados:', this.autores);
         },
         error: (error) => {
           console.log(error)
@@ -123,7 +124,7 @@ export class LibroComponent {
       existencias: this.libroSelected.existencias,
       categoriaId: this.libroSelected.categoria.categoriaId,
       anioPublicacion: this.libroSelected.anioPublicacion,
-      autorId: this.libroSelected?.autor?.autorId
+      autorId: this.libroSelected?.autor?.id
     });    
     console.log(this.form);
     console.log(this.libroSelected);

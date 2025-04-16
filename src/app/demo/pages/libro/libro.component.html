@@ -111,7 +111,7 @@
                 formControlName="autorId" id="autorId" placeholder="Seleccione un autor">
                     <option [value]="" disabled>Seleccione una opción</option>
                     <option *ngFor="let a of autores"
-                    [value]="a.autorId">{{ a.nombre }}</option>
+                    [value]="a.id">{{ a.nombre }}</option>
                 </select>
                 <div *ngIf="form.get('autorId')?.hasError('required') && form.get('autorId')?.touched" class="text-danger">
                   El autor es requerido.
