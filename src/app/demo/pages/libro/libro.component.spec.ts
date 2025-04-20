@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2
 import { LibroComponent } from './libro.component';
 
 describe('LibroComponent', () => {

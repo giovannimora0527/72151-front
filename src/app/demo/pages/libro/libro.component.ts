@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -32,10 +33,39 @@ export class LibroComponent {
     anioPublicacion: new FormControl(''),
     autorId: new FormControl(''),
     categoriaId: new FormControl(''),
+=======
+// ** Angular Imports
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LibroService } from './service/libro.service';
+import { Libro } from 'src/app/models/libro';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+
+declare var bootstrap: any;
+
+@Component({
+  selector: 'app-libro',
+  imports: [CommonModule],
+  templateUrl: './libro.component.html',
+  styleUrls: ['./libro.component.scss']
+})
+export class LibroComponent {
+  libros: Libro[] = [];
+  modalInstance: any;
+
+  form: FormGroup = new FormGroup({
+    nombreLibro: new FormControl(''),
+    autor: new FormControl(''),
+    anioPublicacion: new FormControl(''),
+    categoria: new FormControl(''),
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2
     existencias: new FormControl('')
   });
 
   constructor(
+<<<<<<< HEAD
     private readonly messageUtils: MessageUtils,
     private readonly formBuilder: FormBuilder,
     private readonly libroService: LibroService,
@@ -82,10 +112,26 @@ export class LibroComponent {
       anioPublicacion: ['', [Validators.required]],
       autorId: ['', [Validators.required]],
       categoriaId: ['', [Validators.required]],
+=======
+    private libroService: LibroService,
+    private formBuilder: FormBuilder
+  ) {
+    this.cargarListaLibros();
+    this.cargarFormulario();
+  }
+
+  cargarFormulario(){
+    this.form = this.formBuilder.group({
+      nombreLibro: ['', [Validators.required]],
+      autor: ['', [Validators.required]],
+      anioPublicacion: ['', [Validators.required]],
+      categoria: ['', [Validators.required]],
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2
       existencias: ['', [Validators.required]]
     });
   }
 
+<<<<<<< HEAD
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
@@ -97,10 +143,21 @@ export class LibroComponent {
       },
       error: (error) => {
         console.log(error);
+=======
+  cargarListaLibros() {
+    this.libroService.getLibros().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.libros = data;
+      },
+      error: (error) => {
+        Swal.fire('Error', error.error.message, 'error');
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2
       }
     });
   }
 
+<<<<<<< HEAD
   crearModal(modoForm: string) {
     this.modoFormulario = modoForm;
     const modalElement = document.getElementById('crearModal');
@@ -108,6 +165,11 @@ export class LibroComponent {
     modalElement.setAttribute('aria-hidden', 'false');
     this.titleModal = modoForm == 'C' ? 'Crear Libro' : 'Actualizar Libro';
     if (modalElement) {
+=======
+  crearLibroModal(){
+    const modalElement = document.getElementById('crearLibroModal');
+    if (modalElement) { 
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2
       // Verificar si ya existe una instancia del modal
       if (!this.modalInstance) {
         this.modalInstance = new bootstrap.Modal(modalElement);
@@ -116,6 +178,7 @@ export class LibroComponent {
     }
   }
 
+<<<<<<< HEAD
   abrirModoEdicion(libro: Libro) {
     this.libroSelected = libro;
     this.form.patchValue({
@@ -178,3 +241,12 @@ export class LibroComponent {
     
   }
 }
+=======
+  cerrarModal(){ 
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+  } 
+}
+
+>>>>>>> 1b362df161768992ba20c39c95b5c1cb059cbca2

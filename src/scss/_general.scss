@@ -74,11 +74,11 @@ strong {
 
   > .breadcrumb-item {
     a {
-      color: #888;
+      color: #e3e3e3;
     }
 
     &:last-child a {
-      color: #111;
+      color: #2d9fd0;
       font-weight: 600;
     }
   }
@@ -117,16 +117,17 @@ p.text-muted {
 }
 
 .card {
-  border-radius: 0;
-  box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+  border-radius: 10px;
   border: none;
   margin-bottom: 30px;
   transition: all 0.5s ease-in-out;
 
+  background-color: $dark-color; // usa el color oscuro definido
+  color: $header-dark-text-color; // texto acorde al esquema oscuro
+
   .card-header {
-    background-color: transparent;
-    border-bottom: 1px solid #f1f1f1;
-    // border-bottom: none;
+    background-color: $header-dark-background; // fondo oscuro para el header
+    border-bottom: 1px solid lighten($dark-color, 10%);
     padding: 20px 25px;
     position: relative;
 
@@ -137,7 +138,7 @@ p.text-muted {
 
     h5 {
       margin-bottom: 0;
-      color: #000;
+      color: $header-dark-text-color; // texto claro en el header
       font-size: 17px;
       font-weight: 400;
       display: inline-block;
@@ -147,7 +148,7 @@ p.text-muted {
 
       &:after {
         content: '';
-        background-color: $primary-color;
+        background-color: $primary-color; // acento de color primario
         position: absolute;
         left: -25px;
         top: 0;
@@ -189,7 +190,7 @@ p.text-muted {
         border: none;
         background: transparent;
         box-shadow: none;
-        color: #888;
+        color: lighten($header-dark-text-color, 20%);
 
         i {
           margin-right: 0;
@@ -208,7 +209,7 @@ p.text-muted {
   }
 
   .card-footer {
-    border-top: 1px solid #f1f1f1;
+    border-top: 1px solid lighten($dark-color, 10%);
     background: transparent;
     padding: 25px;
   }

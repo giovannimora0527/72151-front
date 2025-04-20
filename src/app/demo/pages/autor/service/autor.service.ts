@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BackendService } from '../../../../services/backend.service';
+import { Observable } from 'rxjs';
+import { Autor } from 'src/app/models/autor';
+import { AutorRq } from 'src/app/models/autorRq';
+import { BackendService } from 'src/app/services/backend.service';
+import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
 import { environment } from 'src/environments/environment'
 import { Observable } from 'rxjs';
 import { Autor } from 'src/app/models/autor';
@@ -8,13 +12,25 @@ import { Autor } from 'src/app/models/autor';
   providedIn: 'root'
 })
 export class AutorService {
-  api = "autor";
+  private api = `autor`;
 
   constructor(private backendService: BackendService) { 
-   
+    this.testService();
   }
 
-  listarAutores(): Observable<Autor[]>  {
-    return this.backendService.get(environment.apiUrl, this.api, "listar");
+  testService() {
+    this.backendService.get(environment.apiUrl, this.api,"test");
   }
+
+  getAutores(): Observable<Autor[]> {
+    return this.backendService.get(environment.apiUrl, this.api,"listar");
+  }
+
+  crearAutor(autor: AutorRq) : Observable<RespuestaGenerica> {
+      return this.backendService.post(environment.apiUrl, this.api, "guardar-autor", autor);
+    }
+  
+    actualizarAutor(autor: Autor) : Observable<RespuestaGenerica> {
+      return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", autor);
+    }
 }

@@ -14,6 +14,8 @@ declare const bootstrap: any;
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
+
+
 export class UsuarioComponent {
   usuarios: Usuario[] = [];
   modalInstance: any;
@@ -104,6 +106,7 @@ export class UsuarioComponent {
     });
     this.crearUsuarioModal('E');
     console.log(this.usuarioSelected);
+    console.log(this.usuarioSelected.idUsuario);
   }
 
   guardarActualizarUsuario() {
@@ -138,7 +141,8 @@ export class UsuarioComponent {
         this.usuarioSelected = {
           idUsuario: idUsuario,
           ...this.form.getRawValue()
-        };             
+        };   
+        console.log(this.usuarioSelected);          
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
         .subscribe(
           {
