@@ -22,21 +22,21 @@
                       <th>Nombre</th>
                       <th>Nacionalidad</th>
                       <th>Fecha nacimiento</th>
-                      <th class="text-center">Opciones</th>
+                      <th class="text-center">Editar</th>
                     </tr>
                   </thead>
-                  <tbody *ngIf="autor.length === 0">
+                  <tbody *ngIf="autores.length === 0">
                     <tr>
                       <td colspan="6" class="text-center">No hay registros disponibles</td>
                     </tr>
                   </tbody>
-                  <tbody *ngIf="autor.length > 0">
-                    <tr *ngFor="let autor of autor">
+                  <tbody *ngIf="autores.length > 0">
+                    <tr *ngFor="let autor of autores">
                       <td>
                         {{ autor.nombre }}
                       </td>
                       <td>
-                        {{ autor.nacionalidad }}
+                        {{ autor.nacionalidad.nombre }}
                       </td>
                       <td>
                         {{ autor.fechaNacimiento }}
@@ -85,20 +85,23 @@
           </div>
         
           <div class="mb-3">
-            <label for="nacionaloidad" class="form-label">Nacionalidad</label>
-            <input type="text" formControlName="nacionalidad" class="form-control" id="nacionalidad" placeholder="Ingrese el teléfono" 
-            [ngModel]="autorSelected?.telefono"/>
-            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
-              El teléfono es requerido.
+            <label for="nacionalidadId" class="form-label">Nacionalidad</label>
+            <select class="form-select" 
+            formControlName="nacionalidadId" id="nacionalidadId">
+              <option [value]="" disabled>Seleccione una nacionalidad del autor</option>
+              <option [value]="n.nacionalidadId" *ngFor="let n of nacionalidad">{{n.nombre}}</option>
+            </select>
+            <div *ngIf="form.get('nacionalidadId')?.hasError('required') && form.get('nacionalidadId')?.touched" class="text-danger">
+              La nacionalidad del autor es requerido.
             </div>
           </div>
         
           <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono</label>
-            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
-            [ngModel]="autorSelected?.telefono"/>
-            <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
-              El teléfono es requerido.
+            <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+            <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento" placeholder="Ingrese la fecha de nacimiento"
+            [ngModel]="autorSelected?.fechaNacimiento"/>
+            <div *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched" class="text-danger">
+              La fecha de nacimiento es requerida.
             </div>
           </div>
 
@@ -106,7 +109,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarActualizarAutor()">{{titleModal}}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizar()">{{titleModal}}</button>
       </div>
     </div>
   </div>

@@ -14,7 +14,7 @@ export class AutorService {
   constructor(private backendService: BackendService) { 
     this.testService();
   }
-
+  
   testService() {
     this.backendService.get(environment.apiUrl, this.api, "test");
   }
@@ -22,13 +22,13 @@ export class AutorService {
   getAutor(): Observable<Autor[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
-  /*
-  crearUsuario(user: UsuarioRq) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
-  }*/
+  
+  crearAutor(autor: Autor): Observable<RespuestaGenerica> {
+      return this.backendService.post(environment.apiUrl, this.api, "crear-autor", autor); 
+  }
 
-  actualizarAutor(user: Autor) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", user);
+  actualizarAutor(autor: Autor) : Observable<RespuestaGenerica> {
+    return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", autor);
   }
 }
 

@@ -36,11 +36,11 @@ export class LibroComponent {
   });
 
   constructor(
-    private readonly messageUtils: MessageUtils,
-    private readonly formBuilder: FormBuilder,
-    private readonly libroService: LibroService,
-    private readonly autorService: AutorService,
-    private readonly categoriaService: CategoriaService
+    private  messageUtils: MessageUtils,
+    private  formBuilder: FormBuilder,
+    private  libroService: LibroService,
+    private  autorService: AutorService,
+    private  categoriaService: CategoriaService
   ) {
     this.cargarLibros();
     this.cargarFormulario();
@@ -63,7 +63,7 @@ export class LibroComponent {
   }
 
   cargarAutores() {
-    this.autorService.listarAutores().subscribe(
+    this.autorService.getAutor().subscribe(
       {
         next: (data) => {
           console.log(data);
@@ -121,7 +121,7 @@ export class LibroComponent {
     this.form.patchValue({
       titulo: this.libroSelected.titulo,
       existencias: this.libroSelected.existencias,
-      categoriaId: this.libroSelected.categoria.categoriaId,
+      categoriaId: this.libroSelected?.categoria?.categoriaId,
       anioPublicacion: this.libroSelected.anioPublicacion,
       autorId: this.libroSelected?.autor?.autorId
     });    
@@ -155,26 +155,47 @@ export class LibroComponent {
       if (this.modoFormulario === 'C') {
         console.log("Crear");
         this.libroService.crearLibro(this.form.getRawValue())
-        .subscribe(
-          {
+          .subscribe(
+            {
+              next: (data) => {
+                console.log(data.message);
+                this.cerrarModal();
+                this.cargarLibros();
+                this.messageUtils.showMessage("Éxito", data.message, "success");
+              },
+              error: (error) => {
+                console.log(error);
+                this.messageUtils.showMessage("Error", error.error.message, "error")
+              }
+            }
+          );
+      } else if (this.modoFormulario === 'E' && this.libroSelected) {
+        console.log("Actualizar");
+        const libroActualizado: Libro = {
+          idLibro: this.libroSelected.idLibro,
+          titulo: this.form.get('titulo').value,
+          anioPublicacion: this.form.get('anioPublicacion').value,
+          existencias: this.form.get('existencias').value,
+          autor: { autorId: parseInt(this.form.get('autorId').value, 10) } as Autor, // Casting a Autor
+          categoria: { categoriaId: parseInt(this.form.get('categoriaId').value, 10) } as Categoria // Casting a Categoria
+        };
+  
+        this.libroService.actualizarLibro(libroActualizado)
+          .subscribe({
             next: (data) => {
               console.log(data.message);
               this.cerrarModal();
               this.cargarLibros();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
             },
             error: (error) => {
               console.log(error);
-              this.messageUtils.showMessage("Error", error.error.message, "error")  
+              this.messageUtils.showMessage("Error", error.error.message, "error");
             }
-          }
-        );
-      } else {
-        console.log("Actualizar");
+          });
       }
     } else {
       this.messageUtils.showMessage("Advertencia", "El formulario no es valido", "warning")
     }
-
-    
   }
 }
