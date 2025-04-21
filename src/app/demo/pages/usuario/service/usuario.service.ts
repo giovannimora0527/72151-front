@@ -13,11 +13,7 @@ export class UsuarioService {
   private api = `usuario`;
 
   constructor(private backendService: BackendService) { 
-    this.testService();
-  }
-
-  testService() {
-    this.backendService.get(environment.apiUrl, this.api, "test");
+    
   }
 
   getUsuarios(): Observable<Usuario[]> {
@@ -28,7 +24,7 @@ export class UsuarioService {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
   }
 
-  actualizarUsuario(user: Usuario) : Observable<Usuario> {
+  actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
   }
 }
