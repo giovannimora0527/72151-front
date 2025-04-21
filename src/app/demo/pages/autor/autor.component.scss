@@ -1,5 +1,7 @@
 @import '../../../../scss/variables'; // Asegúrate de que la ruta sea la correcta según tu estructura
 
+
+// Estilos para el modal de crear usuario
 .modal {
     .modal-content {
       background-color: $dark-layout; // Fondo oscuro para el modal
@@ -34,6 +36,25 @@
         &:focus {
           border-color: $form-bg; // Borde cuando el input está enfocado
           box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25); // Sombra cuando el input está enfocado
+        }
+      }
+
+      .form-select {
+        background-color: $form-bg; // Fondo igual que los inputs
+        border: 1px solid $theme-border;
+        color: $inverse-color;
+        border-radius: 5px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    
+        &:focus {
+          border-color: $form-bg;
+          box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25);
+          outline: none;
+        }
+    
+        option {
+          background-color: $form-bg;
+          color: $inverse-color;
         }
       }
       
@@ -195,3 +216,14 @@
     }
   }
 
+.swal-overlay {
+    z-index: 1060 !important; /* Mayor que el modal Bootstrap (1050) */
+  }
+  
+  #crearUsuarioModal.modal {
+    z-index: 1040 !important;
+  }
+  
+  #crearUsuarioModal .modal-backdrop {
+    z-index: 1030 !important;
+  }
