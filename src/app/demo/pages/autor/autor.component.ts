@@ -50,8 +50,12 @@ export class AutorComponent {
   cargarListaAutores() {
     this.autorService.getAutores().subscribe({
       next: (data) => {
-        console.log(data);
-        this.autores = data;
+        console.log('Datos recibidos del servidor:', data);
+        this.autores = data.map(autor => ({
+          ...autor,
+          idAutor: autor.autorId,
+        }));
+        console.log('Autores procesados:', this.autores);
       },
       error: (error) => {
         this.messageUtils.showMessage('Error', error.error.message, 'error');
@@ -110,55 +114,46 @@ export class AutorComponent {
     this.form.patchValue({
       nombre: this.autorSelected.nombre,
       nacionalidad: this.autorSelected.nacionalidad,
-      fechaNacimiento: this.autorSelected.fechaNacimiento,
+      fechaNacimiento: this.autorSelected.fechaNacimiento
     });
-    this.crearAutorModal('E'); // Cambiar a 'E' para indicar modo edición
-    console.log(this.autorSelected);
-    console.log(this.autorSelected.idAutor);
+    this.crearAutorModal('E');
+    console.log('Autor seleccionado:', this.autorSelected);
   }
 
   guardarActualizarAutor() {
-    console.log('Entro el autor');
-    console.log(this.form.valid);
     if (this.form.valid) {
-      console.log(this.form.getRawValue());
-      console.log('El formulario es válido');
       if (this.modoFormulario === 'C') {
-        console.log('Creamos un autor nuevo');
         this.autorService.crearAutor(this.form.getRawValue())
-        .subscribe(
-          {
+        .subscribe({
             next: (data) => {
-              console.log(data);
               this.cerrarModal();
               this.cargarListaAutores();
               this.messageUtils.showMessage("Éxito", data.message, "success");
             },
             error: (error) => {
-              console.log(error);
               this.messageUtils.showMessage("Error", error.error.message, "error");
             }
           }
         );
       } else {
-        console.log('Actualizamos un autor existente');
-        const idAutor = this.autorSelected.idAutor;
-        this.autorSelected = {
-          idAutor: idAutor,
+        // Modo Edición
+        
+        const idAutor = this.autorSelected.autorId;
+        const autorActualizado: Autor = {
+          autorId: idAutor,
           ...this.form.getRawValue()
         };
-        console.log(this.autorSelected);
-        this.autorService.actualizarAutor(this.autorSelected)
-        .subscribe(
-          {
+        console.log(idAutor);
+        console.log(autorActualizado);
+        
+        this.autorService.actualizarAutor(autorActualizado)
+        .subscribe({
             next: (data) => {
-              console.log(data);
               this.cerrarModal();
               this.cargarListaAutores();
               this.messageUtils.showMessage("Éxito", data.message, "success");
             },
             error: (error) => {
-              console.log(error);
               this.messageUtils.showMessage("Error", error.error.message, "error");
             }
           }
