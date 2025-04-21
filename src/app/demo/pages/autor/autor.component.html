@@ -1,1 +1,83 @@
-<p>autor works!</p>
+<div class="container mt-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">Lista de Autores</h4>
+          <button class="btn btn-primary" (click)="crearAutorModal('C')">
+            Crear Autor
+          </button>
+        </div>
+        <table class="table table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>Nombre</th>
+              <th>Nacionalidad</th>
+              <th>Fecha de nacimiento</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="autores.length === 0">
+            <tr>
+              <td colspan="4" class="text-center">No hay autores registrados</td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="autores.length > 0">
+            <tr *ngFor="let autor of autores">
+              <td>{{ autor.nombre }}</td>
+              <td>{{ autor.nacionalidad }}</td>
+              <td>{{ autor.fechaNacimiento }}</td>
+              <td class="text-center">
+                <button class="btn btn-outline-primary btn-sm" title="Editar autor" (click)="abrirModoEdicion(autor)">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="crearAutorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form [formGroup]="form" (ngSubmit)="guardarActualizarAutor()">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crearAutorModalLabel">{{ titleModal }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cerrarModal()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" id="nombre" class="form-control" formControlName="nombre" placeholder="Ingrese nombre" />
+              <div *ngIf="f['nombre'].touched && f['nombre'].invalid" class="text-danger">
+                El nombre es requerido
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="nacionalidad" class="form-label">Nacionalidad</label>
+              <input type="text" id="nacionalidad" class="form-control" formControlName="nacionalidad" placeholder="Ingrese nacionalidad" />
+              <div *ngIf="f['nacionalidad'].touched && f['nacionalidad'].invalid" class="text-danger">
+                La nacionalidad es requerida
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+              <input type="date" id="fechaNacimiento" class="form-control" formControlName="fechaNacimiento" />
+              <div *ngIf="f['fechaNacimiento'].touched && f['fechaNacimiento'].invalid" class="text-danger">
+                La fecha de nacimiento es requerida
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary">
+              {{ modoFormulario === 'C' ? 'Guardar' : 'Actualizar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
