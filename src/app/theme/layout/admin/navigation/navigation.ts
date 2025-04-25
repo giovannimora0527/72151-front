@@ -28,8 +28,39 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/usuarios',
         icon: 'feather icon-user',
         classes: 'nav-item'
+<<<<<<< HEAD
       }
     ]
   },
   /* ---------- Nuevos menus aqui -------------  */
+=======
+      },
+      {
+        id: 'autores',
+        title: 'Gestión de Autores',
+        type: 'item',
+        url: '/inicio/autores',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'libros',
+        title: 'Gestión de Libros',
+        type: 'item',
+        url: '/inicio/libros',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
+      {
+        id: 'prestamos',
+        title: 'Gestión de Prestamos',
+        type: 'item',
+        url: '/inicio/prestamos',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      }
+        /* ---------- Nuevos menus aqui -------------  */
+    ]
+  },
+>>>>>>> 267e173 (Frontend corte 2)
 ];
