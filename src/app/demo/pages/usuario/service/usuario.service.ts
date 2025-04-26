@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
-import { Usuario } from 'src/app/models/usuario';
-import { UsuarioRq } from 'src/app/models/usuarioRq';
+import { Usuario } from 'src/app/models/usuario/usuario';
+import { UsuarioRq } from 'src/app/models/usuario/usuarioRq';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 
