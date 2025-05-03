@@ -16,9 +16,13 @@ export class LibroService {
   getLibros(): Observable<Libro[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar")
   }
+  getLibrosDisponibles(): Observable<Libro[]> {
+    return this.backendService.get(environment.apiUrl, this.api, "listar-disponibles")
+  }
 
   crearLibro(libro: Libro): Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "crear-libro", libro); 
   }
+  
 
 }
