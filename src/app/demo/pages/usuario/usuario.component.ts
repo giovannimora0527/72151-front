@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioService } from './service/usuario.service';
-import { Usuario } from 'src/app/models/usuario';
+import { Usuario } from 'src/app/models/usuario/usuario';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { MessageUtils } from 'src/app/utils/message-utils';
 // Importa los objetos necesarios de Bootstrap
