@@ -14,8 +14,6 @@ declare const bootstrap: any;
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
-
-
 export class UsuarioComponent {
   usuarios: Usuario[] = [];
   modalInstance: any;
@@ -32,7 +30,7 @@ export class UsuarioComponent {
   });
 
   constructor(
-    private usuarioService: UsuarioService,
+    private readonly usuarioService: UsuarioService,
     private formBuilder: FormBuilder,
     private messageUtils: MessageUtils
   ) {
@@ -106,12 +104,14 @@ export class UsuarioComponent {
     });
     this.crearUsuarioModal('E');
     console.log(this.usuarioSelected);
-    console.log(this.usuarioSelected.idUsuario);
   }
 
   guardarActualizarUsuario() {
     console.log('Entro');
     console.log(this.form.valid);
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo').setValue(true);
+    }
     if (this.form.valid) {
       console.log(this.form.getRawValue());
       console.log('El formualario es valido');     
@@ -138,8 +138,7 @@ export class UsuarioComponent {
         this.usuarioSelected = {
           idUsuario: idUsuario,
           ...this.form.getRawValue()
-        };   
-        console.log(this.usuarioSelected);          
+        };             
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
         .subscribe(
           {
