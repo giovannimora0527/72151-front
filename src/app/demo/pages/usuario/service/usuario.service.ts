@@ -10,6 +10,9 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class UsuarioService {
+  listarUsuarios() {
+    throw new Error('Method not implemented.');
+  }
   private api = `usuario`;
 
   constructor(private backendService: BackendService) { 

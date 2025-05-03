@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AutorComponent } from './demo/pages/autor/autor.component';
@@ -26,8 +25,3 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'inicio' }
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes as Routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

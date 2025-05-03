@@ -1,0 +1,21 @@
+/* Resaltado para el estado PRESTADO */
+.estado-prestado {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+  }
+  
+  /* Resaltado para el estado VENCIDO */
+  .estado-vencido {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+  }
+  
+  /* Resaltado para el estado DEVUELTO */
+  .estado-devuelto {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+  }
+  

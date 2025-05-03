@@ -1,1 +1,138 @@
-<p>prestamo works!</p>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-outline-primary btn-sm" (click)="crearModal('C')" title="Crear un nuevo préstamo">
+                        <i class="fa fa-plus"></i>
+                        &nbsp;Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Libro</th>
+                                            <th>Fecha de Préstamo</th>
+                                            <th>Fecha de Devolución</th>
+                                            <th>Estado</th>
+                                            <th>Fecha de Entrega</th>
+                                            <th class="text-center">Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngIf="prestamos.length === 0">
+                                        <tr>
+                                            <td colspan="7" class="text-center">No hay registros disponibles</td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody *ngIf="prestamos.length > 0">
+                                        <tr *ngFor="let prestamo of prestamos">
+                                            <td>{{ prestamo.usuario?.nombre }}</td>
+                                            <td>{{ prestamo.libro?.titulo }}</td>
+                                            <td>{{ prestamo.fechaPrestamo | date: 'yyyy-MM-dd' }}</td>
+                                            <td>{{ prestamo.fechaDevolucion | date: 'yyyy-MM-dd' }}</td>
+                                            <td>
+                                                <span [ngClass]="{
+                                                    'text-warning font-weight-bold': prestamo.estado === 'PRESTADO',
+                                                    'text-danger font-weight-bold': prestamo.estado === 'VENCIDO',
+                                                    'text-success font-weight-bold': prestamo.estado === 'DEVUELTO'
+                                                }">
+                                                    {{ prestamo.estado }}
+                                                </span>
+                                            </td>
+                                            <td>{{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date: 'yyyy-MM-dd') : 'No entregado' }}</td>
+                                            <td class="text-center">
+                                                <button
+                                                    class="btn btn-outline-primary btn-sm"
+                                                    title="Editar préstamo"
+                                                    (click)="abrirModoEdicion(prestamo)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearModalLabel">{{ titleModal }}</h5>
+                <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <!-- Campo oculto para ID del préstamo (solo en edición) -->
+                    <input *ngIf="modoFormulario === 'E'" type="hidden" formControlName="idPrestamo" />
+
+                    <!-- Campo Usuario -->
+                    <div class="mb-3" *ngIf="modoFormulario === 'C'">
+                        <label for="usuario" class="form-label">Usuario</label>
+                        <select formControlName="idUsuario" class="form-select" id="usuario">
+                            <option [value]="null">Seleccione un usuario</option>
+                            <option *ngFor="let u of usuarios" [value]="u.idUsuario">{{ u.nombre }}</option>
+                        </select>
+                        <div *ngIf="form.get('idUsuario')?.hasError('required') && form.get('idUsuario')?.touched" class="text-danger">
+                            El usuario es requerido.
+                        </div>
+                    </div>
+
+                    <!-- Campo Libro -->
+                    <div class="mb-3" *ngIf="modoFormulario === 'C'">
+                        <label for="libro" class="form-label">Libro</label>
+                        <select formControlName="idLibro" class="form-select" id="libro">
+                            <option [value]="null">Seleccione un libro</option>
+                            <option *ngFor="let libro of libros" [value]="libro.idLibro">
+                                {{ libro.titulo }} ({{ libro.existencias }} disponible(s))
+                            </option>
+                        </select>
+                        <div *ngIf="form.get('idLibro')?.hasError('required') && form.get('idLibro')?.touched" class="text-danger">
+                            El libro es requerido.
+                        </div>
+                    </div>
+
+                    <!-- Fecha de Devolución -->
+                    <div class="mb-3" *ngIf="modoFormulario === 'C'">
+                        <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+                        <input type="date" formControlName="fechaDevolucion" class="form-control" id="fechaDevolucion" />
+                        <div *ngIf="form.get('fechaDevolucion')?.hasError('required') && form.get('fechaDevolucion')?.touched" class="text-danger">
+                            La fecha de devolución es requerida.
+                        </div>
+                    </div>
+
+                    <!-- Fecha de Entrega (solo en modo edición) -->
+                    <div class="mb-3" *ngIf="modoFormulario === 'E'">
+                        <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+                        <input type="date" formControlName="fechaEntrega" class="form-control" id="fechaEntrega" [value]="prestamoSelected?.fechaEntrega || ''" />
+                        <div *ngIf="form.get('fechaEntrega')?.touched && form.get('fechaEntrega')?.value < form.get('fechaPrestamo')?.value" class="text-danger">
+                            La fecha de entrega no puede ser menor a la de préstamo.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="guardarActualizar()">{{ titleModal }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+  

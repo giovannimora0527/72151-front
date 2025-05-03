@@ -9,9 +9,12 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LibroService {
-  private api = `libro`;
+  listarLibros() {
+    throw new Error('Method not implemented.');
+  }
+  private readonly api = `libro`;
 
-  constructor(private backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) {}
 
   getLibros(): Observable<Libro[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar")
