@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
-import { Usuario } from 'src/app/models/usuario';
-import { UsuarioRq } from 'src/app/models/usuarioRq';
+import { Usuario } from 'src/app/models/usuario/usuario';
+import { UsuarioRq } from 'src/app/models/usuario/usuarioRq';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 
@@ -28,7 +28,7 @@ export class UsuarioService {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
   }
 
-  actualizarUsuario(user: Usuario) : Observable<Usuario> {
+  actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
   }
 }
