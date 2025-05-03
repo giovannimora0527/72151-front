@@ -1,1 +1,143 @@
-<p>prestamo works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary btn-sm" (click)="crearPrestamoModal('C')" title="Crear un nuevo préstamo">
+            <i class="fa fa-plus"></i>
+            &nbsp;Nuevo Préstamo
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="table table-responsive">
+                <table class="table table-responsive table-stripped">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Libro</th>
+                      <th>Fecha Préstamo</th>
+                      <th>Fecha Devolución</th>
+                      <th>Fecha Entrega</th>
+                      <th>Estado</th>
+                      <th class="text-center">Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="prestamos.length === 0">
+                    <tr>
+                      <td colspan="7" class="text-center">No hay préstamos disponibles</td>
+                    </tr>
+                  </tbody>
+                  <tbody *ngIf="prestamos.length > 0">
+                    <tr *ngFor="let prestamo of prestamos">
+                      <td>{{ prestamo.usuario.nombre }}</td>
+                      <td>{{ prestamo.libro.titulo }}</td>
+                      <td>{{ prestamo.fechaPrestamo | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ prestamo.fechaDevolucion | date:'dd/MM/yyyy' }}</td>
+                      <td>
+                        {{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date:'dd/MM/yyyy') : 'No entregado' }}
+                      </td>
+                      <td [ngClass]="{
+                          'text-warning': prestamo.estado === 'PRESTADO',
+                          'text-danger': prestamo.estado === 'VENCIDO',
+                          'text-success': prestamo.estado === 'DEVUELTO'
+                      }">{{ prestamo.estado }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-primary btn-sm" title="Registrar entrega" 
+                                (click)="abrirModoEdicion(prestamo)"
+                                [disabled]="prestamo.fechaEntrega">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="crearPrestamoModal" tabindex="-1" aria-labelledby="crearPrestamoModalLabel" 
+     data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog" [ngClass]="{'modal-lg': modoFormulario === 'C'}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="crearPrestamoModalLabel">
+          {{modoFormulario === 'C' ? 'Crear Préstamo' : 'Registrar Entrega'}}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <!-- Modo Edición -->
+          <div *ngIf="modoFormulario === 'E'" class="mb-3">
+            <div class="alert alert-info mb-3">
+              <p class="mb-1"><strong>Usuario:</strong> {{prestamoSelected?.usuario.nombre}}</p>
+              <p class="mb-1"><strong>Libro:</strong> {{prestamoSelected?.libro.titulo}}</p>
+              <p class="mb-1"><strong>Fecha Préstamo:</strong> {{prestamoSelected?.fechaPrestamo | date:'dd/MM/yyyy'}}</p>
+              <p class="mb-0"><strong>Fecha Devolución:</strong> {{prestamoSelected?.fechaDevolucion | date:'dd/MM/yyyy'}}</p>
+            </div>
+            
+            <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+            <input type="date" class="form-control" formControlName="fechaEntrega" id="fechaEntrega">
+            <div *ngIf="f['fechaEntrega'].errors?.['required'] && f['fechaEntrega'].touched" class="text-danger">
+              La fecha de entrega es requerida
+            </div>
+          </div>
+
+          <!-- Modo Creación -->
+          <div *ngIf="modoFormulario === 'C'">
+            <div class="mb-3">
+              <label for="usuarioId" class="form-label">Usuario</label>
+              <select class="form-select" formControlName="usuarioId" id="usuarioId">
+                <option [value]="" disabled>Seleccione un usuario</option>
+                <option *ngFor="let usuario of usuarios" [value]="usuario.idUsuario">
+                  {{ usuario.nombre }}
+                </option>
+              </select>
+              <div *ngIf="f['usuarioId'].errors?.['required'] && f['usuarioId'].touched" class="text-danger">
+                El usuario es requerido
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="libroId" class="form-label">Libro</label>
+              <select class="form-select" formControlName="libroId" id="libroId" required>
+                <option value="" disabled selected>Seleccione un libro</option>
+                <option *ngFor="let libro of libros" [value]="libro.idLibro">
+                  {{ libro.titulo }}
+                </option>
+              </select>
+              <div *ngIf="f['libroId'].errors?.['required'] && f['libroId'].touched" class="text-danger">
+                El libro es requerido
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+              <input type="date" class="form-control" formControlName="fechaDevolucion" id="fechaDevolucion">
+              <div *ngIf="f['fechaDevolucion'].errors?.['required'] && f['fechaDevolucion'].touched" class="text-danger">
+                La fecha de devolución es requerida
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizar()">
+          {{modoFormulario === 'C' ? 'Crear Préstamo' : 'Registrar Entrega'}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
