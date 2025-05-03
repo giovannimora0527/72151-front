@@ -1,1 +1,144 @@
-<p>prestamo works!</p>
+<div class="container">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <button class="btn btn-outline-primary btn-sm" (click)="crearPrestamoModal('C')" title="Crear un prestamo nuevo">
+              <i class="fa fa-plus"></i>
+              &nbsp;Nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="table table-responsive">
+                  <table class="table table-responsive table-stripped">
+                    <thead>
+                      <tr>
+                        <th>Usuario</th>
+                        <th>Libro</th>
+                        <th>Fecha de prestamo</th>
+                        <th>Fecha de devolucion</th>
+                        <th>Estado</th>
+                        <th>Fecha de entrega</th>
+                        <th class="text-center">Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="prestamos.length === 0">
+                      <tr>
+                        <td colspan="6" class="text-center">No hay registros disponibles</td>
+                      </tr>
+                    </tbody>
+                    <tbody *ngIf="prestamos.length > 0">
+                      <tr *ngFor="let prestamo of prestamos">
+                        <td>
+                          {{ prestamo.usuario }}
+                        </td>
+                        <td>
+                          {{ prestamo.libro }}
+                        </td>
+                        <td>
+                          {{ prestamo.fechaPrestamo }}
+                        </td>
+                        <td>{{ prestamo.fechaDevolucion ? prestamo.fechaDevolucion.toLocaleDateString() : 'Fecha no asignada' }}</td>
+                        <td [ngClass]="{
+                          'text-danger': prestamo.estado === 'VENCIDO',
+                          'text-warning': prestamo.estado === 'PRESTADO',
+                          'text-success': prestamo.estado === 'DEVUELTO'
+                        }">
+                          {{ prestamo.estado }}
+                        </td>
+                        <td>{{ prestamo.fechaEntrega ? prestamo.fechaEntrega.toLocaleDateString() : 'No Entregado' }}</td>
+                        <td class="text-center">
+                          <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(prestamo)" title="Editar prestamo">
+                            <i class="fa fa-edit"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+<div
+class="modal fade"
+id="crearAutorModal"
+tabindex="-1"
+aria-labelledby="crearAutorModalLabel" 
+data-bs-backdrop="static"
+data-bs-keyboard="false"
+>
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="crearAutorModalLabel">{{titleModal}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div><div class="modal-body">
+      <form [formGroup]="modoFormulario === 'C' ? formCrear : formEditar">
+        <!-- Usuario -->
+        <div class="mb-3" *ngIf="modoFormulario === 'C'">
+          <label class="form-label">Usuario</label>
+          <select formControlName="idUsuario" class="form-select">
+            <option value="">Seleccione un usuario</option>
+            <option *ngFor="let usuario of usuarios" [value]="usuario.idUsuario">
+              {{ usuario.nombre }}
+            </option>
+          </select>
+          <div *ngIf="formCrear.get('idUsuario')?.hasError('required') && formCrear.get('idUsuario')?.touched" class="text-danger">
+            El usuario es obligatorio.
+          </div>
+        </div>
+    
+        <!-- Libro -->
+        <div class="mb-3" *ngIf="modoFormulario === 'C'">
+          <label class="form-label">Libro</label>
+          <select formControlName="idLibro" class="form-select">
+            <option value="">Seleccione un libro</option>
+            <option *ngFor="let libro of librosDisponibles" [value]="libro.idLibro">
+              {{ libro.titulo }}
+            </option>
+          </select>
+          <div *ngIf="formCrear.get('idLibro')?.hasError('required') && formCrear.get('idLibro')?.touched" class="text-danger">
+            El libro es obligatorio.
+          </div>
+        </div>
+    
+        <!-- Fecha de Devolución -->
+        <div class="mb-3" *ngIf="modoFormulario === 'C'">
+          <label for="fechaDevolucion" class="form-label">Fecha de devolución</label>
+          <input type="date" formControlName="fechaDevolucion" class="form-control" id="fechaDevolucion" />
+          <div *ngIf="formCrear.get('fechaDevolucion')?.hasError('required') && formCrear.get('fechaDevolucion')?.touched" class="text-danger">
+            La fecha de devolución es requerida.
+          </div>
+        </div>
+    
+        <!-- Fecha de Entrega -->
+        <div class="mb-3"*ngIf="modoFormulario === 'E'">
+          <label for="fechaEntrega" class="form-label">Fecha de entrega</label>
+          <input type="date" formControlName="fechaEntrega"class="form-control"[min]="prestamoSelected?.fechaPrestamo">
+          <div *ngIf="formEditar.get('fechaEntrega')?.hasError('required') && formEditar.get('fechaEntrega')?.touched" class="text-danger">
+            La fecha de entrega es obligatoria.
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+      <button type="button" class="btn btn-primary" (click)="guardarActualizarPrestamo()">{{titleModal}}</button>
+    </div>
+  </div>
+</div>
+</div>

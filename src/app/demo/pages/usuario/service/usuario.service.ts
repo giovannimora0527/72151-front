@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
 import { Usuario } from 'src/app/models/usuario';
 import { UsuarioRq } from 'src/app/models/usuarioRq';
+import { RespuestaGenericaRs } from 'src/app/models/respuesta-gen';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 
@@ -10,21 +10,19 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class UsuarioService {
-  private api = `usuario`;
+  private apiUrl = `${environment.apiUrl}/usuario`;
 
-  constructor(private backendService: BackendService) { 
-    
-  }
+  constructor(private backendService: BackendService) { }
 
   getUsuarios(): Observable<Usuario[]> {
-    return this.backendService.get(environment.apiUrl, this.api, "listar");
+    return this.backendService.get(`${this.apiUrl}/listar`);
   }
 
-  crearUsuario(user: UsuarioRq) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
+  crearUsuario(usuario: UsuarioRq): Observable<RespuestaGenericaRs> {
+    return this.backendService.post(`${this.apiUrl}/crear`, usuario);
   }
 
-  actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
+  actualizarUsuario(usuario: Usuario): Observable<RespuestaGenericaRs> {
+    return this.backendService.post(`${this.apiUrl}/actualizar`, usuario);
   }
 }

@@ -1,3 +1,8 @@
-export class RespuestaGenerica {
-    message?: string;
-}
+
+
+export interface RespuestaGenericaRs {
+    codigo: string;
+    message: string;
+    resultado: any;
+  }
+  

@@ -8,94 +8,53 @@ import { Observable } from 'rxjs';
 export class BackendService {
   constructor(private http: HttpClient) { }
 
-  construirHeader() {
-    // Aqui obtenemos el token desde el local storage
+  // Función para construir los headers con el token
+  private construirHeader() {
     const tokenRecuperado = localStorage.getItem('token');
-    if (tokenRecuperado != '') {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-        Authorization: 'Bearer ' + tokenRecuperado,
-      });
-      return headers;
-    } else {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-      });
-      return headers;
-    }
-  }
-  get<T>(
-    urlApi: string,
-    endpoint: string,
-    service: string,
-    routerParams?: HttpParams
-  ) {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
+    return headers;
+  }
+
+  // Método GET actualizado para aceptar URL completa
+  get<T>(url: string, routerParams?: HttpParams): Observable<T> {
+    const headers = this.construirHeader();
+    return this.http.get<T>(url, {
       params: routerParams,
       headers: headers,
       withCredentials: true,
     });
   }
 
-  post<T>(
-    urlApi: string,
-    endpoint: string,
-    service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
-  ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
-    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+  // Método POST actualizado para aceptar URL completa
+  post<T>(url: string, data: any): Observable<T> {
+    const headers = this.construirHeader();
+    return this.http.post<T>(url, data, {
       headers: headers,
       withCredentials: true,
     });
   }
 
-  put<T>(
-    urlApi: string,
-    endpoint: string,
-    service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
-  ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-    });
-    return this.http.put<T>(`${urlApi}/${endpoint}/${service}`, data, {
+  // Método PUT actualizado para aceptar URL completa
+  put<T>(url: string, data: any): Observable<T> {
+    const headers = this.construirHeader();
+    return this.http.put<T>(url, data, {
       headers: headers,
     });
   }
 
-
-
-  postFile<T>(
-    urlApi: string,
-    endpoint: string,
-    service: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
-  ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+  // Método POST para enviar archivos actualizado
+  postFile<T>(url: string, data: any): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       mimeType: 'multipart/form-data',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+    return this.http.post<T>(url, data, {
       headers: headers,
       withCredentials: true,
     });

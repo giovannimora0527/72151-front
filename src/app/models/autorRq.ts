@@ -1,5 +1,5 @@
 export class AutorRq {
-    nombre?: string;
-    nacionalidad?: string;
-    fechadenacimiento?: string;
-  }
+  nombre: string;
+  nacionalidad: string;
+  fechaNacimiento?: Date;
+}

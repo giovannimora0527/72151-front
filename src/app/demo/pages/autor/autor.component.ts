@@ -1,26 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AutorService } from './service/autor.service';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
-import { MessageUtils } from 'src/app/utils/message-utils';
 import { Autor } from 'src/app/models/autor';
-// Importa los objetos necesarios de Bootstrap
+import { MessageUtils } from 'src/app/utils/message-utils';
+import { CommonModule } from '@angular/common';
+
 declare const bootstrap: any;
 
-  @Component({
-    selector: 'app-autor',
-    standalone: true,
-    imports: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule
-    ],
-    templateUrl: './autor.component.html',
-    styleUrls: ['./autor.component.scss']
-  })
-  
+@Component({
+  selector: 'app-autor',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './autor.component.html',
+  styleUrl: './autor.component.scss'
+})
 export class AutorComponent {
+
 autores: Autor[] = [];
   modalInstance: any;
   modoFormulario: string = '';
@@ -32,11 +26,11 @@ autores: Autor[] = [];
     nombre: new FormControl(''),
     nacionalidad: new FormControl(''),
     fechaNacimiento: new FormControl(''),
-    
+
   });
 
   constructor(
-    private readonly autorService: AutorService,
+    private autotService: AutorService,
     private formBuilder: FormBuilder,
     private messageUtils: MessageUtils
   ) {
@@ -49,7 +43,6 @@ autores: Autor[] = [];
       nombre: ['', [Validators.required]],
       nacionalidad: ['', [Validators.required]],
       fechaNacimiento: ['', [Validators.required]],
-      activo: [true]
     });
   }
 
@@ -58,7 +51,7 @@ autores: Autor[] = [];
   }
 
   cargarListaAutores() {
-    this.autorService.listarAutores().subscribe({
+    this.autotService.listarAutores().subscribe({
       next: (data) => {
         console.log(data);
         this.autores = data;
@@ -99,29 +92,26 @@ autores: Autor[] = [];
     this.autorSelected = null;
   }
 
-  abrirModoEdicion(autor: Autor) {
+  abrirModoEdicion(autor: Autor): void {
     this.autorSelected = autor;
     this.form.patchValue({
-      nombre: this.autorSelected.nombre,
-      nacionalidad: this.autorSelected.nacionalidad,
-      fechaNacimiento: this.autorSelected.fechaNacimiento,
+      nombre: autor.nombre,
+      nacionalidad: autor.nacionalidad,
+      fechaNacimiento: autor.fechaNacimiento
     });
     this.crearAutorModal('E');
-    console.log(this.autorSelected);
   }
+
 
   guardarActualizarAutor() {
     console.log('Entro');
     console.log(this.form.valid);
-    if (this.modoFormulario === 'C') {
-      this.form.get('activo').setValue(true);
-    }
     if (this.form.valid) {
       console.log(this.form.getRawValue());
       console.log('El formualario es valido');     
       if (this.modoFormulario.includes('C')) {
         console.log('Creamos un usuario nuevo');
-        this.autorService.crearAutor(this.form.getRawValue())
+        this.autotService.crearAutor(this.form.getRawValue())
         .subscribe(
           {
             next: (data) => {
@@ -137,13 +127,13 @@ autores: Autor[] = [];
           }
         );
       } else {
-        console.log('Actualizamos un autor existente');
-        const idUsuario = this.autorSelected.autorId;
+        console.log('Actualizamos un usuario existente');
+        const autorId = this.autorSelected.autorId;
         this.autorSelected = {
-          idUsuario: idUsuario,
+          autorId: autorId,
           ...this.form.getRawValue()
-        };             
-        this.autorService.actualizarAutor(this.autorSelected)
+        };            
+        this.autotService.actualizarAutor(this.autorSelected)
         .subscribe(
           {
             next: (data) => {
@@ -153,7 +143,7 @@ autores: Autor[] = [];
               this.messageUtils.showMessage("Éxito", data.message, "success");
             },
             error: (error) => {
-              console.log(error);
+              console.log(this.autorSelected);
               this.messageUtils.showMessage("Error", error.error.message, "error");
             }
           }
@@ -162,4 +152,3 @@ autores: Autor[] = [];
     }
   }
 }
-

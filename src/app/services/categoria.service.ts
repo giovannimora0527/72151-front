@@ -8,11 +8,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CategoriaService {
-  api = 'categoria';
+  private apiUrl = `${environment.apiUrl}/categoria`;
 
   constructor(private readonly backendService: BackendService) {}
 
   getCategorias(): Observable<Categoria[]> {
-    return this.backendService.get(environment.apiUrl, this.api, 'listar');
+    return this.backendService.get(`${this.apiUrl}/listar`);
   }
 }

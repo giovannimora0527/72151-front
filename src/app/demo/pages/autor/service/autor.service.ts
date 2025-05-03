@@ -1,30 +1,28 @@
 import { Injectable } from '@angular/core';
 import { BackendService } from '../../../../services/backend.service';
-import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
-import { AutorRq } from 'src/app/models/autorRq';
-import { environment } from 'src/environments/environment'
+import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Autor } from 'src/app/models/autor';
+import { RespuestaGenericaRs } from 'src/app/models/respuesta-gen';
+import { AutorRq } from 'src/app/models/autorRq';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutorService {
-  api = "autor";
+  private apiUrl = `${environment.apiUrl}/autor`;
 
-  constructor(private backendService: BackendService) { 
-   
+  constructor(private backendService: BackendService) {}
+
+  listarAutores(): Observable<Autor[]> {
+    return this.backendService.get(`${this.apiUrl}/listar`);
   }
 
-  listarAutores(): Observable<Autor[]>  {
-    return this.backendService.get(environment.apiUrl, this.api, "listar");
+  crearAutor(autor: AutorRq): Observable<RespuestaGenericaRs> {
+    return this.backendService.post(`${this.apiUrl}/crear`, autor);
   }
 
-  crearAutor(autor: AutorRq): Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "guardar-autor", autor); 
- }
-  
- actualizarAutor(autor: Autor) : Observable<RespuestaGenerica> {
-     return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", autor);
-   }
+  actualizarAutor(autor: Autor): Observable<RespuestaGenericaRs> {
+    return this.backendService.put(`${this.apiUrl}/actualizar`, autor);
+  }
 }
