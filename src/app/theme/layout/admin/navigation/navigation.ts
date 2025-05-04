@@ -28,12 +28,6 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/usuarios',
         icon: 'feather icon-user',
         classes: 'nav-item'
-<<<<<<< HEAD
-      }
-    ]
-  },
-  /* ---------- Nuevos menus aqui -------------  */
-=======
       },
       {
         id: 'autores',
@@ -59,8 +53,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-users',
         classes: 'nav-item'
       }
-        /* ---------- Nuevos menus aqui -------------  */
     ]
   },
->>>>>>> 267e173 (Frontend corte 2)
 ];

@@ -20,9 +20,64 @@
 @import 'scss/plugins/plugins';
 
 @import 'scss/custom';
-<<<<<<< HEAD
-=======
 
+// Estilos para la tabla responsive
+.table-responsive {
+    border-radius: 15px;
+    // Estilo base de la tabla
+    .table {
+      
+      // Encabezado de la tabla
+      thead {
+        tr {
+          background-color: $dark-layout; // Fondo oscuro para los encabezados
+          
+          //Color de texto encabezados tablas
+          th {
+            color: $brand-background;
+            background-color: $dark-layout; // Color claro para texto de encabezados
+            padding: 0.75rem;
+            font-weight: 600;
+            vertical-align: middle;
+          }
+        }
+      }
+      
+      // Cuerpo de la tabla
+      tbody {
+        tr {
+          border-bottom: 1px solid $theme-border; // Borde inferior para cada fila
+          
+          &:hover {
+            background-color: rgba($dark-color, 0.1); // Efecto hover sutíl
+          }
+          
+          // Estilo para filas alternas (stripped)
+          &:nth-of-type(odd) {
+            background-color: rgba($dark-color, 0.05); // Fondo ligeramente más claro para filas impares
+          }
+          
+          // Estilo para celdas y titulo
+          td {
+            padding: 0.75rem;
+            vertical-align: middle;
+            color: $header-dark-text-color; // Color de texto para celdas
+            background-color: $dark-layout;
+            
+            // Estilos específicos para mensaje "No hay registros disponibles"
+            &.text-center {
+              &[colspan="6"] {
+                padding: 2rem;
+                font-style: italic;
+                color: rgba($dark-layout-font, 0.7); // Color ligeramente más apagado
+              }
+            }
+          }
+        }
+      }
+      
+    }
+}
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
     z-index: 1040 !important; /* Menor que el de SweetAlert2 */
@@ -36,4 +91,3 @@
   .swal2-container {
     z-index: 1060 !important; /* Mayor que el modal (1040) */
   }
->>>>>>> 267e173 (Frontend corte 2)

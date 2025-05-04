@@ -38,6 +38,25 @@
           box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25); // Sombra cuando el input está enfocado
         }
       }
+
+      .form-select {
+        background-color: $form-bg; // Fondo igual que los inputs
+        border: 1px solid $theme-border;
+        color: $inverse-color;
+        border-radius: 5px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    
+        &:focus {
+          border-color: $form-bg;
+          box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25);
+          outline: none;
+        }
+    
+        option {
+          background-color: $form-bg;
+          color: $inverse-color;
+        }
+      }
       
       .form-label {
         color: $theme-heading-color; // Color para las etiquetas
@@ -208,3 +227,18 @@
   #crearUsuarioModal .modal-backdrop {
     z-index: 1030 !important;
   }
+
+.text-warning {
+  color: #ffc107 !important;
+  font-weight: bold;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: bold;
+}
+
+.text-success {
+  color: #28a745 !important;
+  font-weight: bold;
+}

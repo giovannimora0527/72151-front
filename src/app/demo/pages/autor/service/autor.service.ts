@@ -1,36 +1,35 @@
 import { Injectable } from '@angular/core';
-import { BackendService } from '../../../../services/backend.service';
-import { environment } from 'src/environments/environment'
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Autor } from '/Users/samuelmartin/Documents/72151-front/src/app/models/autor';
+import { Autor } from 'src/app/models/autor';
+import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
+import { Nacionalidad } from 'src/app/models/nacionalidad';
+import { BackendService } from 'src/app/services/backend.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class AutorService {
-  private apiUrl = `http://localhost:8000/biblioteca/v1/autor`;
+  private api = `autor`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private backendService: BackendService) {}
 
   getAutores(): Observable<Autor[]> {
-    const headers = new HttpHeaders({
-      'Accept': 'application/json'
-    });
-    return this.http.get<Autor[]>(`${this.apiUrl}/listar`);
+    return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
-  // Crear nuevo autor
-  crearAutor(autor: Autor): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Autor>(`${this.apiUrl}/crear`, autor, { headers });
+  guardarAutor(autor: Autor): Observable<any> {
+    return this.backendService.post(environment.apiUrl, this.api, "guardar-autor", autor);
   }
-  // Actualizar autor
-  actualizarAutor(id: number, autor: Autor): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.put<Autor>(`${this.apiUrl}/actualizar/${id}`, autor, { headers });
+
+  actualizarAutor(autor: Autor): Observable<RespuestaGenerica> {
+    return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", autor);
   }
+
+  // Método para obtener nacionalidades
+  getNacionalidades(): Observable<Nacionalidad[]> {
+    return this.backendService.get(environment.apiUrl, 'nacionalidad', 'listar');
+  }
+
   
 }
-
