@@ -1,0 +1,26 @@
+.estado-prestado {
+    color: #ffC107;
+    font-weight: bold;
+  }
+
+.estado-vencido {
+    color: #DC3545;
+    font-weight: bold;
+  }
+
+.estado-devuelto {
+    color: #28A745;
+    font-weight: bold;
+  }
+
+.swal-overlay {
+    z-index: 1060 !important; /* Mayor que el modal Bootstrap (1050) */
+  }
+  
+  #crearPrestamoModal.modal {
+    z-index: 1040 !important;
+  }
+  
+  #crearPrestamoModal .modal-backdrop {
+    z-index: 1030 !important;
+  }

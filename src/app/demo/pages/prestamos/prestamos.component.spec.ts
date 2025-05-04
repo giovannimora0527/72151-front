@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PrestamoComponent } from './prestamo.component';
+import { PrestamoComponent } from './prestamos.component';
 
 describe('PrestamoComponent', () => {
   let component: PrestamoComponent;

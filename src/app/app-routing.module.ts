@@ -4,7 +4,7 @@ import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AutorComponent } from './demo/pages/autor/autor.component';
 import { LibroComponent } from './demo/pages/libro/libro.component';
-import { PrestamoComponent } from './demo/pages/prestamo/prestamo.component';
+import { PrestamoComponent } from './demo/pages/prestamos/prestamos.component';
 
 export const routes: Routes = [
   {

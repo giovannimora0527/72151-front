@@ -9,6 +9,9 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class LibroService {
+  getLibrosDisponibles() {
+    throw new Error('Method not implemented.');
+  }
   private api = `libro`;
 
   constructor(private backendService: BackendService) {}
