@@ -1,0 +1,171 @@
+<div class="container">
+	<div class="card">
+		<div class="card-header">
+			<div class="row">
+				<div class="col">
+					<button class="btn btn-outline-primary btn-sm" (click)="crearPrestamoModal('C')" title="Crear un prestamo nuevo">
+						<i class="fa fa-plus"></i> 
+						&nbsp;Nuevo
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<div class="table table-responsive">
+								<table class="table table-responsive table-stripped">
+									<thead>
+										<tr>
+											<th>Usuario</th>
+											<th>Libro</th>
+											<th>Fecha de Prestamo</th>
+											<th>Fecha de Devolución</th>
+											<th>Fecha de Entrega</th>
+											<th>Estado</th>
+											<th class="text-center">Opciones</th>
+										</tr>
+									</thead>
+									<tbody *ngIf="prestamos.length === 0">
+										<tr>
+											<td colspan="6" class="text-center">No hay registros disponibles</td>
+										</tr>
+									</tbody>
+									<tbody *ngIf="prestamos.length > 0">
+										<tr *ngFor="let prestamo of prestamos">
+											<td>
+												{{ prestamo.usuario.nombre }}
+											</td>
+											<td>
+												{{ prestamo.libro.titulo }}
+											</td>
+											<td>
+												{{ prestamo.fechaPrestamo | date:'dd/MM/yy, h:mm a' }}
+											</td>
+											<td>
+												{{ prestamo.fechaDevolucion | date:'dd/MM/yy, h:mm a' }}
+											</td>
+											<td>
+												{{ 
+												  prestamo.fechaEntrega 
+													? (prestamo.fechaEntrega | date:'dd/MM/yy, h:mm a') 
+													: 'No entregado' 
+												}}
+											</td>
+											<td>
+												<span class="badge"
+													[ngClass]="{
+													'text-warning': prestamo.estado === 'PRESTADO',
+													'text-danger': prestamo.estado === 'VENCIDO',
+													'text-success': prestamo.estado === 'DEVUELTO'
+													}"
+													[ngStyle]="{ 
+														'font-size': '0.9rem',
+														'font-weight': '900',
+														'text-shadow': '0.5px 0 0 currentColor'
+													}">
+												    {{ prestamo.estado }}
+												</span>
+											</td>
+											<td class="text-center">
+												<button class="btn btn-outline-primary btn-sm" title="Editar prestamo"
+												(click)="abrirModoEdicion(prestamo)">
+													<i class="fa fa-edit"></i>
+												</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade"
+	id="crearPrestamoModal"
+	tabindex="-1"
+	aria-labelledby="crearPrestamoModalLabel" 
+	data-bs-backdrop="static"
+	data-bs-keyboard="false"
+>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="crearPrestamoModalLabel">{{titleModal}}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="form">
+					<!-- CAMPOS PARA CREAR -->
+					<ng-container *ngIf="modoFormulario === 'C'">
+					<div class="mb-3">
+						<label for="usuarioId" class="form-label">Usuario</label>
+						<select class="form-select" 
+						formControlName="usuarioId" id="usuarioId" placeholder="Seleccione un usuario">
+							<option [value]="null" disabled>Seleccione el nombre del usuario</option>
+							<option *ngFor="let c of usuarios" [value]="c.idUsuario">{{c.nombre}}</option>
+						</select>
+						<div *ngIf="form.get('usuarioId')?.hasError('required') && form.get('usuarioId')?.touched" class="text-danger">
+							La nombre del usuario es requerido.
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="libroId" class="form-label">Libro</label>
+						<select class="form-select" 
+						formControlName="libroId" id="libroId" placeholder="Seleccione un libro">
+							<option [value]="null" disabled>Seleccione un libro</option>
+							<option *ngFor="let c of libros" [value]="c.idLibro">{{c.titulo}}</option>
+						</select>
+						<div *ngIf="form.get('libroId')?.hasError('required') && form.get('libroId')?.touched" class="text-danger">
+							La libro es requerido.
+						</div>
+					</div>
+
+					<!-- <div class="mb-3">
+						<label for="fechaPrestamo" class="form-label">Fecha de Prestamo</label>
+						<input type="datetime-local" formControlName="fechaPrestamo" class="form-control" id="fechaPrestamo" placeholder="Ingrese la fecha de prestamo" 
+						[ngModel]="prestamoSelected?.fechaPrestamo"/>
+						<div *ngIf="form.get('fechaPrestamo')?.hasError('required') && form.get('fechaPrestamo')?.touched" class="text-danger">
+							La fecha de prestamo es requerida.
+						</div>
+					</div> -->
+
+					<div class="mb-3">
+						<label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+						<input type="datetime-local" formControlName="fechaDevolucion" class="form-control" id="fechaDevolucion" placeholder="Ingrese la fecha de devolución" 
+						[ngModel]="prestamoSelected?.fechaDevolucion"/>
+						<div *ngIf="form.get('fechaDevolucion')?.hasError('required') && form.get('fechaDevolucion')?.touched" class="text-danger">
+							La fecha de devolución es requerida.
+						</div>
+					</div>
+					</ng-container>
+
+					<!-- CAMPOS PARA EDITAR -->
+					<ng-container *ngIf="modoFormulario === 'E'">
+					<div class="mb-3">
+						<label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+						<input type="datetime-local" formControlName="fechaEntrega" class="form-control" id="fechaEntrega" placeholder="Ingrese la fecha de entrega" 
+						[ngModel]="prestamoSelected?.fechaEntrega"/>
+						<div *ngIf="form.get('fechaEntrega')?.hasError('required') && form.get('fechaEntrega')?.touched" class="text-danger">
+							La fecha de entrega es requerida.
+						</div>
+					</div>
+					</ng-container>
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+				<button type="button" class="btn btn-primary" (click)="guardarActualizarPrestamo()">{{titleModal}}</button>
+			</div>
+		</div>
+	</div>
+</div>

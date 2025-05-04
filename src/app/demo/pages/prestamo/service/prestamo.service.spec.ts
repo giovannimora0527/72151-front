@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AutorService } from './autor.service';
+import { PrestamoService } from './prestamo.service';
 
-describe('AutorService', () => {
-  let service: AutorService;
+describe('PrestamoService', () => {
+  let service: PrestamoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AutorService);
+    service = TestBed.inject(PrestamoService);
   });
- 
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });

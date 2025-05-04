@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { UsuarioService } from './service/usuario.service';
+
+import { CommonModule } from '@angular/common';
 import { Usuario } from 'src/app/models/usuario';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { MessageUtils } from 'src/app/utils/message-utils';
+
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
-@Component({
+@Component({ 
   selector: 'app-usuario',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './usuario.component.html',
@@ -25,7 +27,8 @@ export class UsuarioComponent {
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
     correo: new FormControl(''),
-    telefono: new FormControl('')
+    telefono: new FormControl(''),
+    activo: new FormControl('')
   });
 
   constructor(
@@ -41,7 +44,8 @@ export class UsuarioComponent {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required]],
       correo: ['', [Validators.required]],
-      telefono: ['', [Validators.required]]
+      telefono: ['', [Validators.required]],
+      activo: ['', [Validators.required]]
     });
   }
 
@@ -81,17 +85,25 @@ export class UsuarioComponent {
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.reset({
-      nombreCompleto: "",
+      nombre: "",
       correo: "",
-      telefono: ""
+      telefono: "",
+      activo: ""
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.usuarioSelected = null;
   }
 
   abrirModoEdicion(usuario: Usuario) {
     this.usuarioSelected = usuario;
+    this.form.patchValue({
+      nombre: this.usuarioSelected.nombre,
+      correo: this.usuarioSelected.correo,
+      telefono: this.usuarioSelected.telefono,
+      activo: !!this.usuarioSelected.activo  // asegura que sea booleano
+    });
     this.crearUsuarioModal('E');
     console.log(this.usuarioSelected);
   }
@@ -101,7 +113,7 @@ export class UsuarioComponent {
     console.log(this.form.valid);
     if (this.form.valid) {
       console.log(this.form.getRawValue());
-      console.log('El formualario es valido');     
+      console.log('El formulario es valido');     
       if (this.modoFormulario.includes('C')) {
         console.log('Creamos un usuario nuevo');
         this.usuarioService.crearUsuario(this.form.getRawValue())
@@ -121,6 +133,26 @@ export class UsuarioComponent {
         );
       } else {
         console.log('Actualizamos un usuario existente');
+        const idUsuario = this.usuarioSelected.idUsuario;
+        this.usuarioSelected = {
+          idUsuario: idUsuario,
+          ...this.form.getRawValue()
+        };             
+        this.usuarioService.actualizarUsuario(this.usuarioSelected)
+        .subscribe(
+          {
+            next: (data) => {
+              console.log(data);
+              this.cerrarModal();
+              this.cargarListaUsuarios();
+              this.messageUtils.showMessage("Éxito", data.message, "success");
+            },
+            error: (error) => {
+              console.log(error);
+              this.messageUtils.showMessage("Error", error.error.message, "error");
+            }
+          }
+        );
       }
     }
   }

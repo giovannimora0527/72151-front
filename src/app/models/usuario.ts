@@ -5,4 +5,4 @@ export class Usuario {
     telefono?: string;
     fechaRegistro?: Date;
     activo?: boolean;
-}
+} 

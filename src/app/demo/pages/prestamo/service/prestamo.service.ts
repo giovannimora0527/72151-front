@@ -4,15 +4,15 @@ import { environment } from 'src/environments/environment';
 
 import { Observable } from 'rxjs';
 import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
-import { Autor } from 'src/app/models/autor';
-import { AutorRq } from 'src/app/models/autorRq';
+import { Prestamo } from 'src/app/models/prestamo';
+import { PrestamoRq } from 'src/app/models/prestamoRq';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AutorService {
+export class PrestamoService {
 
-  private api = `autor`;
+  private api = `prestamo`;
 
   constructor(private backendService: BackendService) { 
     this.testService();
@@ -22,15 +22,15 @@ export class AutorService {
     this.backendService.get(environment.apiUrl, this.api, "test");
   }
 
-  getAutores(): Observable<Autor[]> {
+  getPrestamos(): Observable<Prestamo[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
-  crearAutor(autor: AutorRq) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "guardar-autor", autor);
+  crearPrestamo(prestamo: PrestamoRq) : Observable<RespuestaGenerica> {
+    return this.backendService.post(environment.apiUrl, this.api, "guardar-prestamo", prestamo);
   }
 
-  actualizarAutor(autor: Autor) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "actualizar-autor", autor);
+  actualizarPrestamo(prestamo: Prestamo) : Observable<RespuestaGenerica> {
+    return this.backendService.post(environment.apiUrl, this.api, "actualizar-prestamo", prestamo);
   }
 }
