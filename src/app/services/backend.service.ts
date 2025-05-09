@@ -64,6 +64,25 @@ export class BackendService {
     });
   }
 
+  delete<T>(
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data?: any
+  ): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+    });
+    return this.http.delete<T>(`${urlApi}/${endpoint}/${service}`, {
+      headers: headers,
+      body: data,
+      withCredentials: true,
+    });
+  }
+
   put<T>(
     urlApi: string,
     endpoint: string,

@@ -22,7 +22,7 @@
                       <th>Usuario</th>
                       <th>Libro</th>
                       <th>Fecha de préstamo</th>
-                      <th>Fecha de devolución (Esperada)</th> <th>Estado</th>
+                      <th>Fecha de devolución</th> <th>Estado</th>
                       <th>Fecha de entrega</th>
                       <th class="text-center">Editar</th>
                     </tr>
@@ -41,10 +41,10 @@
                         {{ prestamo.libro?.titulo }}
                       </td>
                       <td>
-                        {{ prestamo.fechaPrestamo | date:'yyyy-MM-dd HH:mm' }}
+                        {{ prestamo.fechaPrestamo | date:'dd-MM-yyyy HH:mm' }}
                       </td>
                       <td>
-                        {{ prestamo.fechaDevolucion | date:'yyyy-MM-dd' }}
+                         {{ prestamo.fechaDevolucion | date:'dd-MM-yyyy HH:mm' }}
                       </td>
                       <td>
                         <span [ngClass]="{
@@ -55,13 +55,17 @@
                           {{ prestamo.estado }} </span>
                       </td>
                       <td>
-                        {{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date:'yyyy-MM-dd') : 'No Entregado' }}
+                        {{ prestamo.fechaEntrega ? (prestamo.fechaEntrega | date:'dd-MM-yyyy HH:mm') : 'No Entregado' }}
                       </td>
                       <td class="text-center">
                         <button class="btn btn-outline-primary btn-sm" title="Editar prestamo"
                                 (click)="abrirModoEdicion(prestamo)"
                                 [disabled]="prestamo.estado !== 'PRESTADO'">
                           <i class="fa fa-edit"></i> </button>
+                        <button class="btn btn-outline-primary btn-sm" title="Archivar prestamo"
+                                (click)="confirmarArchivarPrestamo(prestamo)"
+                                [disabled]="prestamo.estado !== 'DEVUELTO'">
+                          <i class="fa fa-archive"></i> </button>
                       </td>
                     </tr>
                   </tbody>
@@ -113,12 +117,11 @@
             </div>
 
             <div class="mb-3">
-              <label for="fechaDevolucion" class="form-label">Fecha de Devolución (Esperada)</label>
-              <input type="date" formControlName="fechaDevolucion" class="form-control" id="fechaDevolucion">
+              <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label> <input type="datetime-local" formControlName="fechaDevolucion" class="form-control" id="fechaDevolucion">
               <div *ngIf="form.get('fechaDevolucion')?.hasError('required') && form.get('fechaDevolucion')?.touched" class="text-danger">
                 La fecha de devolución es requerida.
               </div>
-              <div *ngIf="form.get('fechaDevolucion')?.hasError('min') && form.get('fechaDevolucion')?.touched" class="text-danger">
+              <div *ngIf="form.get('fechaDevolucion')?.hasError('minDate') && form.get('fechaDevolucion')?.touched" class="text-danger">
                 La fecha de devolución debe ser en el futuro. </div>
             </div>
           </div>
@@ -127,9 +130,8 @@
             <h6>Información del Préstamo</h6>
             <p><strong>Usuario:</strong> {{ prestamoSelected?.usuario?.nombre }}</p>
             <p><strong>Libro:</strong> {{ prestamoSelected?.libro?.titulo }}</p>
-            <p><strong>Fecha de Préstamo:</strong> {{ prestamoSelected?.fechaPrestamo | date:'yyyy-MM-dd HH:mm' }}</p>
-            <p><strong>Fecha de Devolución (Esperada):</strong> {{ prestamoSelected?.fechaDevolucion | date:'yyyy-MM-dd' }}</p>
-            <p><strong>Estado Actual:</strong>
+            <p><strong>Fecha de Préstamo:</strong> {{ prestamoSelected?.fechaPrestamo | date:'dd-MM-yyyy HH:mm' }}</p>
+            <p><strong>Fecha de Devolución:</strong> {{ prestamoSelected?.fechaDevolucion | date:'dd-MM-yyyy HH:mm' }}</p> <p><strong>Estado Actual:</strong>
               <span [ngClass]="{
                                 'estado-prestado': prestamoSelected?.estado === 'PRESTADO',
                                 'estado-vencido': prestamoSelected?.estado === 'VENCIDO',
@@ -142,11 +144,11 @@
 
             <div class="mb-3">
               <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
-              <input type="date" formControlName="fechaEntrega" class="form-control" id="fechaEntrega">
+              <input type="datetime-local" formControlName="fechaEntrega" class="form-control" id="fechaEntrega">
               <div *ngIf="form.get('fechaEntrega')?.hasError('required') && form.get('fechaEntrega')?.touched" class="text-danger">
                 La fecha de entrega es requerida para la devolución.
               </div>
-              <div *ngIf="form.get('fechaEntrega')?.hasError('min') && form.get('fechaEntrega')?.touched" class="text-danger">
+              <div *ngIf="form.get('fechaEntrega')?.hasError('minDate') && form.get('fechaEntrega')?.touched" class="text-danger">
                 La fecha de entrega no puede ser anterior a la fecha de préstamo. </div>
             </div>
           </div>
