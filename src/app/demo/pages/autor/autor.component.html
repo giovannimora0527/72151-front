@@ -1,1 +1,78 @@
-<p>autor works!</p>
+<div class="container mt-4">
+    <h4 class="fw-bold py-3 mb-4">
+      Gestión de Autores
+    </h4>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item active">Gestión de Autores</li>
+      </ol>
+    </nav>
+  
+    <div class="card">
+      <div class="card-body">
+        <button class="btn btn-primary mb-3" (click)="crearAutorModal('C')">
+          <i class="bx bx-plus"></i> Nuevo
+        </button>
+  
+        <div class="table-responsive text-nowrap">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Nacionalidad</th>
+                <th>Fecha de nacimiento</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              <tr *ngFor="let autor of autores">
+                <td>{{ autor.nombre }}</td>
+                <td>{{ autor.nacionalidad || '-' }}</td>
+                <td>{{ autor.fechaNacimiento | date: 'yyyy-MM-dd' }}</td>
+                <td>
+                  <button class="btn btn-outline-primary btn-sm" (click)="abrirModoEdicion(autor)">
+                    <i class="bx bx-edit-alt"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="autores.length === 0">
+                <td colspan="4" class="text-center">No hay autores registrados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="crearAutorModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form [formGroup]="form" (ngSubmit)="guardarActualizarAutor()" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ titleModal }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+          <div class="mb-3">
+            <label>Nacionalidad</label>
+            <input type="text" class="form-control" formControlName="nacionalidad" />
+          </div>
+          <div class="mb-3">
+            <label>Fecha de nacimiento</label>
+            <input type="date" class="form-control" formControlName="fechaNacimiento" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-success" [disabled]="form.invalid">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

@@ -53,10 +53,12 @@ export class LibroComponent {
       {
         next: (data) => {
           console.log(data);
+          debugger
           this.categorias = data;
         },
         error: (error) => {
           console.log(error);
+          debugger
         }
       }
     );

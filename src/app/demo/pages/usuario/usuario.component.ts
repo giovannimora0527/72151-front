@@ -10,6 +10,7 @@ declare const bootstrap: any;
 
 @Component({
   selector: 'app-usuario',
+  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'

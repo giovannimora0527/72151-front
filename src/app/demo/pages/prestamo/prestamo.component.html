@@ -1,1 +1,58 @@
-<p>prestamo works!</p>
+<div class="container mt-4">
+  <h4 class="fw-bold py-3 mb-4">Gestión de Prestamos</h4>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Home</li>
+      <li class="breadcrumb-item active" aria-current="page">Gestión de Prestamos</li>
+    </ol>
+  </nav>
+
+  <div class="card">
+    <div class="card-body">
+      <button class="btn btn-primary mb-3">
+        <i class="bx bx-plus"></i> Nuevo
+      </button>
+
+      <div class="table-responsive text-nowrap">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Usuario</th>
+              <th>Libro</th>
+              <th>Fecha de préstamo</th>
+              <th>Fecha de devolución</th>
+              <th>Estado</th>
+              <th>Fecha de entrega</th>
+              <th>Opciones</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="prestamos != null && prestamos.length > 0">
+            <tr *ngFor="let prestamo of prestamos">
+              <td>{{prestamo.usuario.nombre}}
+
+              </td>
+              <td>{{prestamo.libro.titulo}}</td>
+              <td>{{prestamo.fechaPrestamo}}</td>
+              <td>{{prestamo.fechaDevolucion}}</td>
+              <td><span>
+                {{prestamo.estado === null || prestamo.estado === undefined? "No entregado": prestamo.estado}}
+              </span></td>
+              <td>{{prestamo.fechaEntrega}}</td>
+              <td>
+                <button class="btn btn-outline-primary btn-sm">
+                  <i class="bx bx-edit-alt"></i>
+                </button>
+              </td>
+            </tr>            
+          </tbody>
+          <tbody *ngIf="prestamos == null || prestamos.length == 0">
+            <tr>
+              <td colspan="7" class="text-center">No hay préstamos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
