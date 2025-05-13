@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RespuestaGenerica } from 'src/app/models/respuesta-gen';
 import { Usuario } from 'src/app/models/usuario';
-import { UsuarioRq } from 'src/app/models/usuarioRq';
+import { UsuarioRs } from 'src/app/models/usuarioRs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 
@@ -13,18 +12,23 @@ export class UsuarioService {
   private api = `usuario`;
 
   constructor(private backendService: BackendService) { 
-    
+    this.testService();
+  }
+
+  testService() {
+    this.backendService.get(environment.apiUrl, this.api, "test");
   }
 
   getUsuarios(): Observable<Usuario[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
-  crearUsuario(user: UsuarioRq) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
+  guardarUsuarioNuevo(usuario: Usuario) : Observable<UsuarioRs>  {    
+    return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", usuario);
   }
 
-  actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
-    return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
+  actualizarUsuario(usuario: Usuario): Observable<UsuarioRs>  {    
+    return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", usuario);
   }
+
 }

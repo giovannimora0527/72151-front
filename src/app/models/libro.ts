@@ -6,6 +6,6 @@ export class Libro {
     titulo: string;
     autor: Autor;
     anioPublicacion?: number;
-    categoria?: Categoria;
-    existencias: number;    
+    existencias: number;
+    categoria: Categoria;
 }
