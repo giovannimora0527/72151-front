@@ -19,15 +19,15 @@ export const routes: Routes = [
     children: [      
       { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
       { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
-      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }}  ,
-      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }}       
+      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }},
+      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }},
     ]
   },
   { path: '**', redirectTo: 'inicio' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes as Routes)],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

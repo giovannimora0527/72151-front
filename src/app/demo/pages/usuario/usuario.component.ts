@@ -3,15 +3,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioService } from './service/usuario.service';
 import { Usuario } from 'src/app/models/usuario';
+import Swal from 'sweetalert2';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { MessageUtils } from 'src/app/utils/message-utils';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { DndDropEvent, DndModule } from 'ngx-drag-drop';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
+
 @Component({
   selector: 'app-usuario',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule, DndModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -19,7 +22,8 @@ export class UsuarioComponent {
   usuarios: Usuario[] = [];
   modalInstance: any;
   modoFormulario: string = '';
-  titleModal: string = "";
+  titleModal: string = '';
+  msjSpinner: string = "";
 
   usuarioSelected: Usuario;
 
@@ -32,8 +36,9 @@ export class UsuarioComponent {
 
   constructor(
     private readonly usuarioService: UsuarioService,
-    private formBuilder: FormBuilder,
-    private messageUtils: MessageUtils
+    private readonly formBuilder: FormBuilder,
+    private readonly messageUtils: MessageUtils,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.cargarListaUsuarios();
     this.cargarFormulario();
@@ -42,7 +47,7 @@ export class UsuarioComponent {
   cargarFormulario() {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required]],
-      correo: ['', [Validators.required]],
+      correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.required]],
       activo: ['', [Validators.required]]
     });
@@ -55,39 +60,44 @@ export class UsuarioComponent {
   cargarListaUsuarios() {
     this.usuarioService.getUsuarios().subscribe({
       next: (data) => {
-        console.log(data);
         this.usuarios = data;
       },
       error: (error) => {
-        this.messageUtils.showMessage('Error', error.error.message, 'error');
+        Swal.fire('Error', error.error.message, 'error');
       }
     });
   }
 
   crearUsuarioModal(modoForm: string) {
+    this.titleModal = modoForm == 'C' ? 'Crear Usuario' : 'Editar Usuario';
     this.modoFormulario = modoForm;
     const modalElement = document.getElementById('crearUsuarioModal');
-    modalElement.blur();
-    modalElement.setAttribute('aria-hidden', 'false');
-    this.titleModal = modoForm == "C"? "Crear Usuario": "Actualizar Usuario";
     if (modalElement) {
       // Verificar si ya existe una instancia del modal
-      if (!this.modalInstance) {
-        this.modalInstance = new bootstrap.Modal(modalElement);
-      }
+      this.modalInstance ??= new bootstrap.Modal(modalElement);
       this.modalInstance.show();
     }
   }
 
-  cerrarModal() { 
+  abrirCargarModal() {  
+    this.titleModal = "Cargar usuarios";
+    const modalElement = document.getElementById('cargarUsuarioModal');
+    if (modalElement) {
+      // Verificar si ya existe una instancia del modal
+      this.modalInstance ??= new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  cerrarModal() {
     this.form.reset();
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.reset({
-      nombre: "",
-      correo: "",
-      telefono: "",
-      activo: ""
+      nombre: '',
+      correo: '',
+      telefono: '',
+      activo: ''
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
@@ -101,61 +111,60 @@ export class UsuarioComponent {
       nombre: this.usuarioSelected.nombre,
       correo: this.usuarioSelected.correo,
       telefono: this.usuarioSelected.telefono,
-      activo: !!this.usuarioSelected.activo  // asegura que sea booleano
+      activo: !!this.usuarioSelected.activo // asegura que sea booleano
     });
     this.crearUsuarioModal('E');
-    console.log(this.usuarioSelected);
   }
 
   guardarActualizarUsuario() {
-    console.log('Entro');
+    this.msjSpinner = this.modoFormulario === 'C' ? 'Creando Usuario' : 'Actualizando Usuario';
+    this.spinner.show();
     console.log(this.form.valid);
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
-    }
+    }   
     if (this.form.valid) {
-      console.log(this.form.getRawValue());
-      console.log('El formualario es valido');     
       if (this.modoFormulario.includes('C')) {
-        console.log('Creamos un usuario nuevo');
-        this.usuarioService.crearUsuario(this.form.getRawValue())
-        .subscribe(
-          {
-            next: (data) => {
-              console.log(data);
-              this.cerrarModal();
-              this.cargarListaUsuarios();
-              this.messageUtils.showMessage("Éxito", data.message, "success");
-            },
-            error: (error) => {
-              console.log(error);
-              this.messageUtils.showMessage("Error", error.error.message, "error");
-            }
+        this.usuarioService.guardarUsuarioNuevo(this.form.getRawValue()).subscribe({
+          next: (data) => {
+            this.spinner.hide();          
+            this.messageUtils.showMessage('Éxito', data.message, 'success');
+            this.cargarListaUsuarios();
+            this.cerrarModal();
+          },
+          error: (error) => {
+            this.spinner.hide();         
+            this.messageUtils.showMessage('Error', error.error.message, 'error');
           }
-        );
+        });
       } else {
-        console.log('Actualizamos un usuario existente');
         const idUsuario = this.usuarioSelected.idUsuario;
+        // Actualizar solo los campos específicos
         this.usuarioSelected = {
-          idUsuario: idUsuario,
-          ...this.form.getRawValue()
-        };             
-        this.usuarioService.actualizarUsuario(this.usuarioSelected)
-        .subscribe(
-          {
-            next: (data) => {
-              console.log(data);
-              this.cerrarModal();
-              this.cargarListaUsuarios();
-              this.messageUtils.showMessage("Éxito", data.message, "success");
-            },
-            error: (error) => {
-              console.log(error);
-              this.messageUtils.showMessage("Error", error.error.message, "error");
-            }
+          ...this.usuarioSelected, // Mantener los valores anteriores
+          ...this.form.getRawValue() // Sobrescribir con los valores del formulario
+        };
+        this.usuarioSelected.idUsuario = idUsuario;       
+        // Actualizamos el usuario
+        this.usuarioService.actualizarUsuario(this.usuarioSelected).subscribe({
+          next: (data) => {
+            this.spinner.hide();
+            this.messageUtils.showMessage('Éxito', data.message, 'success');
+            this.cargarListaUsuarios();
+            this.cerrarModal();         
+            this.usuarioSelected = null;
+          },
+          error: (error) => {
+            this.spinner.hide();
+            console.log(error.error.message);
+            this.messageUtils.showMessage('Error', error.error.message, 'error');
           }
-        );
+        });
       }
     }
+  }
+
+  onDrop(event: DndDropEvent): void {
+    console.log('Item dropped:', event);
   }
 }

@@ -1,118 +1,197 @@
-import { Component, OnInit } from '@angular/core';
-import { Libro } from 'src/app/models/libro';
-import { Prestamo } from 'src/app/models/prestamo';
-import { Usuario } from 'src/app/models/usuario';
-import { PrestamoService } from './service/prestamo.service';
-import { UsuarioService } from '../usuario/service/usuario.service';
-import { MessageUtils } from 'src/app/utils/message-utils';
-import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageUtils } from 'src/app/utils/message-utils';
+import { UsuarioService } from '../usuario/service/usuario.service';
+import { Usuario } from 'src/app/models/usuario';
+import { LibroService } from '../libro/service/libro.service';
+import { Libro } from 'src/app/models/libro';
+import { PrestamoService } from './service/prestamo.service';
+import { Prestamo } from 'src/app/models/prestamo';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { DateTimeUtils } from 'src/app/utils/date-utils';
+
+declare const bootstrap: any;
 
 @Component({
   selector: 'app-prestamo',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './prestamo.component.html',
-  styleUrls: ['./prestamo.component.scss']
+  styleUrl: './prestamo.component.scss'
 })
-export class PrestamoComponent implements OnInit {
-  prestamos: Prestamo[] = [];
-  librosDisponibles: Libro[] = [];
+export class PrestamoComponent {
+  titleModal: string = '';
+  modoFormulario: string = '';
+  modalInstance: any;
   usuarios: Usuario[] = [];
-  nuevoPrestamo: Prestamo;
+  libros: Libro[] = [];
+  fechaDevolucion: string = ''; // ejemplo: '2025-04-07'
+  prestamos: Prestamo[] = [];
   prestamoSelected: Prestamo;
-
+  msjSpinner: string = '';
 
   form: FormGroup = new FormGroup({
-    libroId: new FormControl(''),
     usuarioId: new FormControl(''),
+    libroId: new FormControl(''),
     fechaDevolucion: new FormControl(''),
     fechaEntrega: new FormControl('')
   });
 
-  constructor(private readonly prestamoService: PrestamoService,
-    private readonly usuarioService: UsuarioService,
-    private readonly messageUtils: MessageUtils,
+  constructor(
     private readonly formBuilder: FormBuilder,
+    private readonly messageUtils: MessageUtils,
+    private readonly usuarioService: UsuarioService,
+    private readonly libroService: LibroService,
+    private readonly prestamoService: PrestamoService,
+    private readonly spinner: NgxSpinnerService,
+    private readonly dateTimeUtils: DateTimeUtils
   ) {
     this.cargarFormulario();
+    this.cargarListaUsuarios();
+    this.cargarListaLibros();
+    this.cargarPrestamos();
+  }
+
+  cargarPrestamos() {
+    this.prestamoService.listarPrestamos().subscribe({
+      next: (data) => {
+        this.prestamos = data;
+      },
+      error: (error) => {
+        console.log(error);
+        this.messageUtils.showMessage('Error', error.error.message, 'error');
+      }
+    });
+  }
+
+  cargarListaUsuarios() {
+    this.usuarioService.getUsuarios().subscribe({
+      next: (data) => {
+        this.usuarios = data;
+      },
+      error: (error) => {
+        this.messageUtils.showMessage('Error', error.error.message, 'error');
+      }
+    });
+  }
+
+  cargarListaLibros() {
+    this.libroService.getLibrosDisponiblesForPrestamo().subscribe({
+      next: (data) => {
+        this.libros = data;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   cargarFormulario() {
     this.form = this.formBuilder.group({
-      libroId: ['', [Validators.required]],
       usuarioId: ['', [Validators.required]],
+      libroId: ['', [Validators.required]],
       fechaDevolucion: ['', [Validators.required]],
       fechaEntrega: ['', [Validators.required]]
     });
   }
 
-  ngOnInit(): void {
-    this.cargarDatos();
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
   }
 
-  cargarDatos(): void {
-    this.prestamoService.listar().subscribe({
-      next: (prestamos: Prestamo[]) => {
-        this.prestamos = prestamos;
-      },
-      error: (err: any) => {
-        console.error('Error al cargar los préstamos:', err);
-      }
-    });
-
-    this.prestamoService.listarLibrosDisponibles()
-      .subscribe(
-        {
-          next: (data) => {
-            this.librosDisponibles = data;
-          },
-          error: (error) => {
-            console.log(error);
-            this.messageUtils.showMessage("Error", error.error.message, "error");
-          }
-
-        });
-
-    this.usuarioService.getUsuarios().subscribe({
-      next: (usuarios: Usuario[]) => {
-        this.usuarios = usuarios;
-      },
-      error: (err: any) => {
-        console.error('Error al cargar los usuarios:', err);
-      }
-    });
-  }
-
-
-  crearPrestamo(): void {
-    if (!this.form.valid) {
-      console.error('Formulario no válido');
-      return;
-    }
-
-    this.prestamoService.crearPrestamo(this.nuevoPrestamo).subscribe({
-      next: (data) => {
-        this.cargarDatos()
-        this.resetFormulario();
-      },
-      error: (err: any) => {
-        console.error('Error al crear el préstamo:', err);
-      }
-    });
-  }
-
-  resetFormulario(): void {
+  cerrarModal() {
     this.form.reset();
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.reset({
-      nombre: "",
-      correo: "",
-      telefono: "",
-      activo: ""
+      usuarioId: '',
+      libroId: '',
+      fechaDevolucion: ''
     });
-
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
     this.prestamoSelected = null;
+  }
+
+  abrirModoEdicion(prestamo: Prestamo) {
+    this.prestamoSelected = prestamo;
+    this.form.patchValue({
+      usuarioId: prestamo.usuario.idUsuario,
+      libroId: prestamo.libro.idLibro,
+      fechaDevolucion: prestamo.fechaDevolucion
+    });
+    this.crearModal('E');
+  }
+
+  crearModal(modoForm: string) {
+    this.cargarListaLibros();
+    this.titleModal = modoForm == 'C' ? 'Registrar Préstamo' : 'Editar Préstamo';
+    this.modoFormulario = modoForm;
+    const modalElement = document.getElementById('crearPrestamoModal');
+    if (modalElement) {
+      // Verificar si ya existe una instancia del modal
+      this.modalInstance ??= new bootstrap.Modal(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  guardarPrestamo() {
+    this.msjSpinner = 'Guardando';   
+    if (this.modoFormulario.includes('C')) {
+      this.form.get('fechaEntrega')?.setValue(1);
+    } 
+    if (!this.form.valid) {
+      this.messageUtils.showMessage('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
+      return;
+    }
+
+    if (this.form.valid) {
+      this.spinner.show();
+      this.prestamoService.guardarPrestamo(this.form.getRawValue()).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.spinner.hide();
+          this.messageUtils.showMessage('Éxito', data.message, 'success');
+          this.cargarPrestamos();
+          this.cerrarModal();
+        },
+        error: (error) => {
+          this.spinner.hide();
+          this.messageUtils.showMessage('Error', error.error.message, 'error');
+        }
+      });
+    }
+  }
+
+  hacerEntregaLibro() {
+    this.msjSpinner = 'Entregando Libro';
+    this.spinner.show();
+    if (this.modoFormulario.includes('E')) {
+      this.form.get('usuarioId')?.setValue(this.prestamoSelected.usuario.idUsuario);
+      this.form.get('libroId')?.setValue(this.prestamoSelected.libro.idLibro);
+      this.form.get('fechaDevolucion')?.setValue(this.prestamoSelected.fechaDevolucion);
+    }
+    if (this.form.valid) {
+      const fechaForm = this.form.get('fechaEntrega')?.value;
+      if (fechaForm) {
+        const fecha = new Date(fechaForm);
+        this.prestamoSelected.fechaEntrega = this.dateTimeUtils.formatDateCurrentZone(fecha);
+      }
+
+      this.prestamoService.entregarLibro(this.prestamoSelected).subscribe({
+        next: (data) => {
+          this.spinner.hide();
+          this.cerrarModal();
+          this.cargarPrestamos();
+          this.messageUtils.showMessage('Exito', data.message, 'success');
+        },
+        error: (error) => {
+          this.spinner.hide();
+          this.messageUtils.showMessage('Error', error.error.message, 'error');
+        }
+      });
+    }
   }
 }
