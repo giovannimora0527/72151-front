@@ -12,7 +12,8 @@ declare const bootstrap: any;
   selector: 'app-usuario',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.scss'
+  styleUrl: './usuario.component.scss',
+  providers: [NgxSpinnerService]
 })
 export class UsuarioComponent {
   usuarios: Usuario[] = [];
@@ -28,6 +29,12 @@ export class UsuarioComponent {
     telefono: new FormControl(''),
     activo: new FormControl('')
   });
+
+  // Propiedades para carga masiva
+  archivoSeleccionado: File | null = null;
+  nombreArchivo: string = '';
+  erroresCarga: string[] = [];
+  mensajeExito: string = '';
 
   constructor(
     private usuarioService: UsuarioService,
@@ -68,7 +75,7 @@ export class UsuarioComponent {
     const modalElement = document.getElementById('crearUsuarioModal');
     modalElement.blur();
     modalElement.setAttribute('aria-hidden', 'false');
-    this.titleModal = modoForm == "C"? "Crear Usuario": "Actualizar Usuario";
+    this.titleModal = modoForm == "C" ? "Crear Usuario" : "Actualizar Usuario";
     if (modalElement) {
       // Verificar si ya existe una instancia del modal
       if (!this.modalInstance) {
@@ -78,7 +85,7 @@ export class UsuarioComponent {
     }
   }
 
-  cerrarModal() { 
+  cerrarModal() {
     this.form.reset();
     this.form.markAsPristine();
     this.form.markAsUntouched();
@@ -111,46 +118,46 @@ export class UsuarioComponent {
     console.log(this.form.valid);
     if (this.form.valid) {
       console.log(this.form.getRawValue());
-      console.log('El formualario es valido');     
+      console.log('El formualario es valido');
       if (this.modoFormulario.includes('C')) {
         console.log('Creamos un usuario nuevo');
         this.usuarioService.crearUsuario(this.form.getRawValue())
-        .subscribe(
-          {
-            next: (data) => {
-              console.log(data);
-              this.cerrarModal();
-              this.cargarListaUsuarios();
-              this.messageUtils.showMessage("Éxito", data.message, "success");
-            },
-            error: (error) => {
-              console.log(error);
-              this.messageUtils.showMessage("Error", error.error.message, "error");
+          .subscribe(
+            {
+              next: (data) => {
+                console.log(data);
+                this.cerrarModal();
+                this.cargarListaUsuarios();
+                this.messageUtils.showMessage("Éxito", data.message, "success");
+              },
+              error: (error) => {
+                console.log(error);
+                this.messageUtils.showMessage("Error", error.error.message, "error");
+              }
             }
-          }
-        );
+          );
       } else {
         console.log('Actualizamos un usuario existente');
         const idUsuario = this.usuarioSelected.idUsuario;
         this.usuarioSelected = {
           idUsuario: idUsuario,
           ...this.form.getRawValue()
-        };             
+        };
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
-        .subscribe(
-          {
-            next: (data) => {
-              console.log(data);
-              this.cerrarModal();
-              this.cargarListaUsuarios();
-              this.messageUtils.showMessage("Éxito", data.message, "success");
-            },
-            error: (error) => {
-              console.log(error);
-              this.messageUtils.showMessage("Error", error.error.message, "error");
+          .subscribe(
+            {
+              next: (data) => {
+                console.log(data);
+                this.cerrarModal();
+                this.cargarListaUsuarios();
+                this.messageUtils.showMessage("Éxito", data.message, "success");
+              },
+              error: (error) => {
+                console.log(error);
+                this.messageUtils.showMessage("Error", error.error.message, "error");
+              }
             }
-          }
-        );
+          );
       }
     }
   }

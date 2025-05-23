@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 export class UsuarioService {
   private api = `usuario`;
 
-  constructor(private backendService: BackendService) { 
+  constructor(private backendService: BackendService) {
     this.testService();
   }
 
@@ -24,6 +24,7 @@ export class UsuarioService {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
+<<<<<<< Updated upstream
   crearUsuario(user: UsuarioRq) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
   }
@@ -31,4 +32,17 @@ export class UsuarioService {
   actualizarUsuario(user: Usuario) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", user);
   }
+=======
+  guardarUsuarioNuevo(usuario: Usuario): Observable<UsuarioRs> {
+    return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", usuario);
+  }
+
+  actualizarUsuario(usuario: Usuario): Observable<UsuarioRs> {
+    return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", usuario);
+  }
+
+  cargarUsuariosMasivos(usuarios: Usuario[]): Observable<Usuario[]> {
+    return this.backendService.post(environment.apiUrl, this.api, 'cargar-masivo', usuarios);
+  }
+>>>>>>> Stashed changes
 }
