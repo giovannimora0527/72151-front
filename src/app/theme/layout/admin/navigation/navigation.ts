@@ -52,6 +52,15 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/prestamos',
         icon: 'feather icon-users',
         classes: 'nav-item'
+      },
+
+      {
+    id: 'deudas',
+    title: 'Gestión de Deudas',
+    type: 'item',
+    url: '/inicio/deuda',  // Asegúrate que coincida con tu ruta definida
+    icon: 'feather icon-credit-card', // o icon-credit-card
+    classes: 'nav-item'
       }
         /* ---------- Nuevos menus aqui -------------  */
     ]
