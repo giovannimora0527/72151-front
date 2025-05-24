@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 export class UsuarioService {
   private api = `usuario`;
 
-  constructor(private backendService: BackendService) { 
+  constructor(private backendService: BackendService) {
     this.testService();
   }
 
@@ -23,12 +23,16 @@ export class UsuarioService {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
-  guardarUsuarioNuevo(usuario: Usuario) : Observable<UsuarioRs>  {    
+  guardarUsuarioNuevo(usuario: Usuario): Observable<UsuarioRs> {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", usuario);
   }
 
-  actualizarUsuario(usuario: Usuario): Observable<UsuarioRs>  {    
+  actualizarUsuario(usuario: Usuario): Observable<UsuarioRs> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-usuario", usuario);
+  }
+
+  cargarUsuariosMasivos(usuarios: Usuario[]): Observable<Usuario[]> {
+    return this.backendService.post(environment.apiUrl, this.api, "cargar-masivo", usuarios);
   }
 
 }

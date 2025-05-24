@@ -11,9 +11,9 @@ import { environment } from 'src/environments/environment';
 export class LibroService {
 
   private readonly api = `libro`;
-  
-  constructor(private readonly backendService: BackendService) { 
-   
+
+  constructor(private readonly backendService: BackendService) {
+
   }
 
   getLibros(): Observable<Libro[]> {
@@ -25,10 +25,14 @@ export class LibroService {
   }
 
   crearLibro(libro: Libro): Observable<Respuesta> {
-    return this.backendService.post(environment.apiUrl, this.api, "crear-libro", libro); 
+    return this.backendService.post(environment.apiUrl, this.api, "crear-libro", libro);
   }
 
-  actualizarLibro(libro: Libro) : Observable<Respuesta> {
+  actualizarLibro(libro: Libro): Observable<Respuesta> {
     return this.backendService.post(environment.apiUrl, this.api, "actualizar-libro", libro);
+  }
+
+  cargarLibrosMasivos(libros: Libro[]): Observable<Respuesta> {
+    return this.backendService.post(environment.apiUrl, this.api, 'cargar-masivo', libros);
   }
 }

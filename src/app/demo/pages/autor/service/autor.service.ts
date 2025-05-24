@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 export class AutorService {
   private readonly api = `autor`;
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) { }
 
   getAutores(): Observable<Autor[]> {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
@@ -32,5 +32,7 @@ export class AutorService {
     return this.backendService.get(environment.apiUrl, 'util', 'listar-nacionalidades');
   }
 
-  
+  cargarAutoresMasivos(autores: any[]): Observable<any> {
+    return this.backendService.post(environment.apiUrl, this.api, "cargar-masivo", autores);
+  }
 }

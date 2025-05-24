@@ -11,6 +11,11 @@
             <i class="fa fa-plus"></i>
             &nbsp;Nuevo
           </button>
+          <button class="btn btn-outline-success btn-sm" (click)="abrirCargarLibrosModal()"
+            title="Carga masiva de libros">
+            <i class="fa fa-upload"></i>
+            &nbsp;Carga masiva
+          </button>
         </div>
       </div>
     </div>
@@ -54,7 +59,8 @@
                         {{ libro.categoria.nombre }}
                       </td>
                       <td class="text-center">
-                        <button class="btn btn-outline-primary btn-sm" title="Editar libro" (click)="abrirModoEdicion(libro)">
+                        <button class="btn btn-outline-primary btn-sm" title="Editar libro"
+                          (click)="abrirModoEdicion(libro)">
                           <i class="fa fa-edit"></i>
                         </button>
                       </td>
@@ -70,7 +76,8 @@
   </div>
 </div>
 
-<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" data-bs-backdrop="static"
+  data-bs-keyboard="false">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -81,49 +88,31 @@
         <form [formGroup]="form">
           <div class="mb-3">
             <label for="titulo" class="form-label">Titulo</label>
-            <input
-              type="text"
-              formControlName="titulo"
-              class="form-control"
-              id="titulo"
-              placeholder="Ingrese el titulo completo del libro"
-              [ngModel]="libroSelected?.titulo"
-            />
+            <input type="text" formControlName="titulo" class="form-control" id="titulo"
+              placeholder="Ingrese el titulo completo del libro" [ngModel]="libroSelected?.titulo" />
             <div *ngIf="form.get('titulo')?.hasError('required') && form.get('titulo')?.touched" class="text-danger">
               El título del libro es requerido.
             </div>
           </div>
-          
+
           <div class="mb-3">
             <label for="existencias" class="form-label">Existencias</label>
-            <input
-              type="number"
-              formControlName="existencias"
-              class="form-control"
-              id="existencias"
-              placeholder="Ingrese la cantidad existencias del libro"
-              [ngModel]="libroSelected?.existencias"
-              [min]="1"             
-              (input)="onInput($event)"
-            />
-            <div *ngIf="form.get('existencias')?.hasError('required') && form.get('existencias')?.touched" class="text-danger">
+            <input type="number" formControlName="existencias" class="form-control" id="existencias"
+              placeholder="Ingrese la cantidad existencias del libro" [ngModel]="libroSelected?.existencias" [min]="1"
+              (input)="onInput($event)" />
+            <div *ngIf="form.get('existencias')?.hasError('required') && form.get('existencias')?.touched"
+              class="text-danger">
               La cantidad de existencias del libro es requerido.
             </div>
           </div>
 
           <div class="mb-3">
             <label for="anioPublicacion" class="form-label">Año de Publicación</label>
-            <input
-              type="number"
-              formControlName="anioPublicacion"
-              class="form-control"
-              id="anioPublicacion"
-              placeholder="Ingrese el año de publicación del libro"
-              [min]="1"
-              [max]="currentYear"
-              (input)="onInput($event)"
-            />
-            <div *ngIf="form.get('anioPublicacion')?.hasError('required') && form.get('anioPublicacion')?.touched" class="text-danger">
+            <input type="number" formControlName="anioPublicacion" class="form-control" id="anioPublicacion"
+              placeholder="Ingrese el año de publicación del libro" [min]="1" [max]="currentYear"
+              (input)="onInput($event)" />
+            <div *ngIf="form.get('anioPublicacion')?.hasError('required') && form.get('anioPublicacion')?.touched"
+              class="text-danger">
               El año de publicación del libro es requerido.
             </div>
           </div>
@@ -132,9 +121,10 @@
             <label for="categoriaId" class="form-label">Categoría o Género</label>
             <select class="form-select" formControlName="categoriaId">
               <option [value]="c.categoriaId" *ngFor="let c of categorias"
-              [selected]="!form.get('categoriaId')?.value && c === categorias[0]">{{ c.nombre }}</option>
+                [selected]="!form.get('categoriaId')?.value && c === categorias[0]">{{ c.nombre }}</option>
             </select>
-            <div *ngIf="form.get('categoriaId')?.hasError('required') && form.get('categoriaId')?.touched" class="text-danger">
+            <div *ngIf="form.get('categoriaId')?.hasError('required') && form.get('categoriaId')?.touched"
+              class="text-danger">
               El género del libro es requerido.
             </div>
           </div>
@@ -142,21 +132,53 @@
 
           <div class="mb-3">
             <label for="autorId" class="form-label">Autor</label>
-            <select class="form-select" formControlName="autorId">           
-              <option [value]="autor.autorId" *ngFor="let autor of autores" 
-              [selected]="!form.get('autorId')?.value && autor === autores[0]">
+            <select class="form-select" formControlName="autorId">
+              <option [value]="autor.autorId" *ngFor="let autor of autores"
+                [selected]="!form.get('autorId')?.value && autor === autores[0]">
                 {{ autor.nombre }}
               </option>
             </select>
             <div *ngIf="form.get('autorId')?.hasError('required') && form.get('autorId')?.touched" class="text-danger">
               El autor del libro es requerido.
             </div>
-          </div>          
+          </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
         <button type="button" class="btn btn-primary" (click)="guardarActualizar()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cargarLibrosModal" tabindex="-1" aria-labelledby="cargarLibrosModalLabel"
+  data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cargarLibrosModalLabel">Carga masiva de libros</h5>
+        <button type="button" class="btn-close" (click)="cerrarModalCargaLibros()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" id="archivoLibrosCSV" (change)="onFileSelectedLibros($event)"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          class="form-control mb-2" />
+        <div *ngIf="nombreArchivoLibros" class="mb-2">
+          <strong>Archivo seleccionado:</strong> {{ nombreArchivoLibros }}
+        </div>
+        <div *ngIf="erroresCargaLibros.length > 0" class="alert alert-danger">
+          <ul>
+            <li *ngFor="let error of erroresCargaLibros">{{ error }}</li>
+          </ul>
+        </div>
+        <div *ngIf="mensajeExitoLibros" class="alert alert-success">
+          {{ mensajeExitoLibros }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalCargaLibros()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="procesarArchivoLibros()">Procesar archivo</button>
       </div>
     </div>
   </div>
