@@ -51,13 +51,19 @@ export class BackendService {
     endpoint: string,
     service: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: any,
+    options?: { headers?: HttpHeaders } // Nuevo parámetro opcional para las opciones
   ): Observable<T> {
     const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
+
+    if (options?.headers) {
+      headers = options.headers;
+    }
+
     return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
       headers: headers,
       withCredentials: true,
@@ -69,7 +75,7 @@ export class BackendService {
     endpoint: string,
     service: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: any,
   ): Observable<T> {
     const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
     const headers = new HttpHeaders({

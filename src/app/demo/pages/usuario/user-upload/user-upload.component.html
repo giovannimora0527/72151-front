@@ -1,0 +1,10 @@
+<div>
+    <h2>Cargar Usuarios desde Archivo</h2>
+    <input type="file" (change)="onFileSelected($event)">
+    <br><br>
+    <button [disabled]="!selectedFile" (click)="uploadUsers()">Cargar Usuarios</button>
+    <br><br>
+    <div *ngIf="uploadStatus">
+      {{ uploadStatus }}
+    </div>
+  </div>

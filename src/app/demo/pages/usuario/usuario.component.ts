@@ -8,10 +8,11 @@ import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveF
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { UserUploadComponent } from './user-upload/user-upload.component'; // Importa el componente de carga
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule, UserUploadComponent], // Asegúrate de incluir UserUploadComponent en los imports
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -21,6 +22,7 @@ export class UsuarioComponent {
   modoFormulario: string = '';
   titleModal: string = '';
   msjSpinner: string = "Cargando";
+  mostrarUploadComponent: boolean = false; // Nueva variable para controlar la visibilidad del componente de carga
 
   usuarioSelected: Usuario;
 
@@ -110,7 +112,7 @@ export class UsuarioComponent {
     });
   }
 
-  guardarActualizarUsuario() {   
+  guardarActualizarUsuario() {
     console.log(this.form.valid);
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
@@ -125,7 +127,7 @@ export class UsuarioComponent {
             console.log(data);
             this.showMessage("Éxito", data.message, "success");
               this.cargarListaUsuarios();
-              this.cerrarModal(); 
+              this.cerrarModal();
           },
           error: (error) => {
             console.log(error);
@@ -140,15 +142,15 @@ export class UsuarioComponent {
           ...this.usuarioSelected, // Mantener los valores anteriores
           ...this.form.getRawValue() // Sobrescribir con los valores del formulario
         };
-        this.usuarioSelected.idUsuario = idUsuario;       
-        console.log(this.usuarioSelected);    
+        this.usuarioSelected.idUsuario = idUsuario;
+        console.log(this.usuarioSelected);
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
         .subscribe({
           next: (data) => {
             console.log(data);
             this.showMessage("Éxito", data.message, "success");
               this.cargarListaUsuarios();
-              this.cerrarModal();             
+              this.cerrarModal();
           },
           error: (error) => {
             console.log(error);
@@ -164,7 +166,7 @@ export class UsuarioComponent {
       title: title,
       text: text,
       icon: icon,
-      confirmButtonText: 'Aceptar',      
+      confirmButtonText: 'Aceptar',
       customClass: {
         container: 'position-fixed',
         popup: 'swal-overlay'
@@ -176,5 +178,9 @@ export class UsuarioComponent {
         }
       }
     });
+  }
+
+  mostrarCargaUsuarios() {
+    this.mostrarUploadComponent = !this.mostrarUploadComponent;
   }
 }
