@@ -19,6 +19,7 @@
 								<table class="table table-responsive table-stripped">
 									<thead>
 										<tr>
+											<th>No.</th>
 											<th>Usuario</th>
 											<th>Libro</th>
 											<th>Fecha de Prestamo</th>
@@ -35,6 +36,18 @@
 									</tbody>
 									<tbody *ngIf="prestamos.length > 0">
 										<tr *ngFor="let prestamo of prestamos">
+											<td>
+												<span style="
+													display: inline-block;
+													background-color: #e0f7fa;
+													color: #00796b;
+													font-weight: bold;
+													padding: 4px 10px;
+													border-radius: 12px;
+													font-size: 0.9rem;
+												">{{ prestamo.idPrestamo }}
+												</span>
+											</td>
 											<td>
 												{{ prestamo.usuario.nombre }}
 											</td>

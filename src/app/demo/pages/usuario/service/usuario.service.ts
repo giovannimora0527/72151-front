@@ -26,6 +26,10 @@ export class UsuarioService {
     return this.backendService.get(environment.apiUrl, this.api, "listar");
   }
 
+  getUsuariosSinMultasActivas(): Observable<Usuario[]> {
+    return this.backendService.get(environment.apiUrl, this.api, "listar-usuarios-sin-multas-activas");
+  }
+
   crearUsuario(user: UsuarioRq) : Observable<RespuestaGenerica> {
     return this.backendService.post(environment.apiUrl, this.api, "guardar-usuario", user);
   }

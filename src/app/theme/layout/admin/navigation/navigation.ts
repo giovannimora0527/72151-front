@@ -52,6 +52,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/prestamos',
         icon: 'feather icon-home',
         classes: 'nav-item'
+      },
+      {
+        id: 'multas',
+        title: 'Gestión de Multas',
+        type: 'item',
+        url: '/inicio/multas',
+        icon: 'feather icon-list',
+        classes: 'nav-item'
       }
         /* ---------- Nuevos menus aqui -------------  */
     ]

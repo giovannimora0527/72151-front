@@ -15,4 +15,4 @@ export class NacionalidadService {
   getNacionalidades(): Observable<Nacionalidad[]> {
     return this.backendService.get(environment.apiUrl, this.api, 'listar');
   }
-}
+} 

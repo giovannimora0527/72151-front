@@ -15,4 +15,4 @@ export class CategoriaService {
   getCategorias(): Observable<Categoria[]> {
     return this.backendService.get(environment.apiUrl, this.api, 'listar');
   }
-}
+} 

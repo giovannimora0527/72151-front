@@ -1,0 +1,202 @@
+<div class="container">
+	<div class="card">
+		<div class="card-header">
+			<div class="row">
+				<div class="col">
+					<button class="btn btn-outline-primary btn-sm" (click)="crearMultaModal('C')" title="Crear una multa nueva">
+						<i class="fa fa-plus"></i> 
+						&nbsp;Nuevo
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col">
+					<div class="card">
+						<div class="card-body">
+							<div class="table table-responsive">
+								<table class="table table-responsive table-stripped">
+									<thead>
+										<tr>
+											<th>No. Prestamo</th>
+                                            <th>Fecha de Multa</th>
+											<th>Usuario Multado</th>
+											<th>Libro Involucrado</th>
+											<th>Concepto</th>
+											<th>Monto</th>
+											<th>Fecha de Pago</th>
+											<th>Estado</th>
+											<th class="text-center">Opciones</th>
+										</tr>
+									</thead>
+									<tbody *ngIf="multas.length === 0">
+										<tr>
+											<td colspan="6" class="text-center">No hay registros disponibles</td>
+										</tr>
+									</tbody>
+									<tbody *ngIf="multas.length > 0">
+										<tr *ngFor="let multa of multas">
+											<td>
+												<span style="
+													display: inline-block;
+													background-color: #faf7e0;
+													color: #796100;
+													font-weight: bold;
+													padding: 4px 10px;
+													border-radius: 12px;
+													font-size: 0.9rem;
+												">{{ multa.prestamo.idPrestamo }}
+												</span>
+											</td>
+                                            <td>
+												{{ multa.fechaMulta | date:'dd/MM/yy, h:mm a' }}
+											</td>
+											<td>
+												{{ multa.usuario.nombre }}
+											</td>
+											<td>
+												{{ multa.libro.titulo }}
+											</td>
+                                            <td>
+												{{ multa.concepto
+                                                   ? (multa.concepto)
+                                                   : 'Entrega tardía'
+                                                }}
+											</td>
+                                            <td>
+												{{ multa.monto | currency:'$ ':'symbol':'1.0-0' }}
+											</td>
+											<td>
+												{{ 
+												  multa.fechaPago
+													? (multa.fechaPago | date:'dd/MM/yy, h:mm a') 
+													: 'No ha pagado'
+												}}
+											</td>
+											<td>
+												<span class="badge"
+													[ngClass]="{
+													'text-danger': multa.estado === 'PENDIENTE',
+													'text-success': multa.estado === 'PAGADO'
+													}"
+													[ngStyle]="{ 
+														'font-size': '0.9rem',
+														'font-weight': '900',
+														'text-shadow': '0.5px 0 0 currentColor'
+													}">
+												    {{ multa.estado }}
+												</span>
+											</td>
+											<td class="text-center">
+												<button class="btn btn-outline-primary btn-sm" title="Editar multa"
+												(click)="abrirModoEdicion(multa)">
+													<i class="fa fa-edit"></i>
+												</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div
+	class="modal fade"
+	id="crearMultaModal"
+	tabindex="-1"
+	aria-labelledby="crearMultaModalLabel" 
+	data-bs-backdrop="static"
+	data-bs-keyboard="false"
+>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="crearMultaModalLabel">{{titleModal}}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="form">
+					<!-- CAMPOS PARA CREAR -->
+					<ng-container *ngIf="modoFormulario === 'Z'"> <!-- Para no mostrar los inputs 'C'-->
+					<div class="mb-3">
+						<label for="usuarioId" class="form-label">Usuario</label>
+						<select class="form-select" 
+						formControlName="usuarioId" id="usuarioId" placeholder="Seleccione un usuario">
+							<option [value]="null" disabled>Seleccione el nombre del usuario</option>
+							<option *ngFor="let c of usuarios" [value]="c.idUsuario">{{c.nombre}}</option>
+						</select>
+						<div *ngIf="form.get('usuarioId')?.hasError('required') && form.get('usuarioId')?.touched" class="text-danger">
+							La nombre del usuario es requerido.
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="libroId" class="form-label">Libro</label>
+						<select class="form-select" 
+						formControlName="libroId" id="libroId" placeholder="Seleccione un libro">
+							<option [value]="null" disabled>Seleccione un libro</option>
+							<option *ngFor="let c of libros" [value]="c.idLibro">{{c.titulo}}</option>
+						</select>
+						<div *ngIf="form.get('libroId')?.hasError('required') && form.get('libroId')?.touched" class="text-danger">
+							La libro es requerido.
+						</div>
+					</div>
+
+                    <div class="mb-3">
+						<label for="prestamoId" class="form-label">Prestamo</label>
+						<select class="form-select" 
+						formControlName="prestamoId" id="prestamoId" placeholder="Seleccione un prestamo">
+							<option [value]="null" disabled>Seleccione el ID de un prestamo</option>
+							<option *ngFor="let c of prestamos" [value]="c.idPrestamo">{{c.idPrestamo}}</option>
+						</select>
+						<div *ngIf="form.get('prestamoId')?.hasError('required') && form.get('prestamoId')?.touched" class="text-danger">
+							La prestamo es requerido.
+						</div>
+					</div>
+
+                    <!-- <div class="mb-3">
+                        <label for="concepto" class="form-label">Concepto de la multa</label>
+                        <input type="text" formControlName="concepto" class="form-control" id="concepto" placeholder="Ingrese el concepto de la multa" 
+                        [ngModel]="multaSelected?.concepto"/>
+                        <div *ngIf="form.get('concepto')?.hasError('required') && form.get('concepto')?.touched" class="text-danger">
+                        El concepto de la multa es requerido.
+                        </div>
+                    </div> -->
+
+                    <div class="mb-3">
+                        <label for="monto" class="form-label">Multa ($)</label>
+                        <input type="number" formControlName="monto" class="form-control" id="monto" placeholder="Ingrese el monto de la multa" 
+                        [ngModel]="multaSelected?.monto"/>
+                        <div *ngIf="form.get('monto')?.hasError('required') && form.get('monto')?.touched" class="text-danger">
+                        El monto la multa es requerido.
+                        </div>
+                    </div>
+					</ng-container>
+
+					<!-- CAMPOS PARA EDITAR -->
+					<ng-container *ngIf="modoFormulario === 'E'">
+					<div class="mb-3">
+						<label for="fechaPago" class="form-label">Fecha de Pago</label>
+						<input type="datetime-local" formControlName="fechaPago" class="form-control" id="fechaPago" placeholder="Ingrese la fecha de pago" 
+						[ngModel]="multaSelected?.fechaPago"/>
+						<div *ngIf="form.get('fechaPago')?.hasError('required') && form.get('fechaPago')?.touched" class="text-danger">
+							La fecha de pago es requerida.
+						</div>
+					</div>
+					</ng-container>
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
+				<button type="button" class="btn btn-primary" (click)="guardarActualizarMulta()">{{titleModal}}</button>
+			</div>
+		</div>
+	</div>
+</div>
